@@ -170,7 +170,7 @@
         }
         #galaxyCanvas.active { display: block; }
 
-        /* MENSAJE CENTRAL EN EL CORAZÓN - TEXTO EN MÚLTIPLES LÍNEAS */
+        /* MENSAJE CENTRAL - TEXTO HTML PURO (SIN LAG) */
         #mensajeCentral {
             position: fixed;
             z-index: 35;
@@ -178,59 +178,49 @@
             left: 50%;
             transform: translate(-50%, -50%);
             text-align: center;
-            color: #fff;
             pointer-events: none;
-            text-shadow: 
-                0 0 30px #ff6b81,
-                0 0 60px #ff85a2,
-                0 0 90px #ffb6c1,
-                0 0 120px #ff6b81;
-            animation: brilloMensaje 2s ease-in-out infinite alternate;
             max-width: 90vw;
-            line-height: 1.4;
+            line-height: 1.3;
+            animation: brilloMensaje 2s ease-in-out infinite alternate;
+            display: none;
         }
         #mensajeCentral .linea1 {
-            font-size: clamp(1.8rem, 5vw, 3.5rem);
-            font-weight: 700;
-            background: linear-gradient(45deg, #FFB6C1, #FF6B81, #FFD1DC, #FF85A2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: clamp(2rem, 5vw, 3.8rem);
+            font-weight: 800;
+            color: #FFB6C1;
+            text-shadow: 0 0 30px #ff6b81, 0 0 60px #ff85a2, 0 0 90px #ffb6c1;
             display: block;
+            letter-spacing: 2px;
         }
         #mensajeCentral .linea2 {
-            font-size: clamp(1.4rem, 3.5vw, 2.8rem);
-            font-weight: 600;
-            background: linear-gradient(45deg, #FFD1DC, #FFB6C1, #FF85A2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: clamp(1.6rem, 4vw, 3rem);
+            font-weight: 700;
+            color: #FFD1DC;
+            text-shadow: 0 0 30px #ff6b81, 0 0 60px #ff85a2;
             display: block;
             margin-top: 0.2rem;
+            letter-spacing: 1px;
         }
         #mensajeCentral .linea3 {
-            font-size: clamp(1.0rem, 2.5vw, 2.0rem);
-            font-weight: 500;
-            background: linear-gradient(45deg, #FFB6C1, #FFDAB9, #FF85A2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: clamp(1.2rem, 3vw, 2.2rem);
+            font-weight: 600;
+            color: #FFDAB9;
+            text-shadow: 0 0 30px #ff85a2, 0 0 50px #ff6b81;
             display: block;
             margin-top: 0.2rem;
         }
         #mensajeCentral .linea4 {
-            font-size: clamp(1.8rem, 4vw, 3.0rem);
-            font-weight: 700;
-            background: linear-gradient(45deg, #FF6B81, #FF85A2, #FFB6C1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: clamp(2rem, 4.5vw, 3.2rem);
+            font-weight: 800;
+            color: #FF6B81;
+            text-shadow: 0 0 40px #ff6b81, 0 0 80px #ff85a2, 0 0 120px #ffb6c1;
             display: block;
             margin-top: 0.3rem;
+            letter-spacing: 2px;
         }
         @keyframes brilloMensaje {
-            0% { text-shadow: 0 0 30px #ff6b81, 0 0 60px #ff85a2, 0 0 90px #ffb6c1; }
-            100% { text-shadow: 0 0 50px #ff6b81, 0 0 90px #ff85a2, 0 0 130px #ffb6c1, 0 0 180px #ff6b81; }
+            0% { filter: brightness(1) drop-shadow(0 0 20px #ff6b81); }
+            100% { filter: brightness(1.2) drop-shadow(0 0 40px #ff85a2); }
         }
 
         /* Reproductor de música */
@@ -430,10 +420,10 @@
             .volumen-slider input[type="range"] { width: 30px; }
             .mensaje-emergente { max-width: 260px; padding: 20px; font-size: 0.9rem; }
             #btnAbrir { font-size: 1.2rem; padding: 0.8rem 1.8rem; }
-            #mensajeCentral .linea1 { font-size: clamp(1.2rem, 4vw, 2rem); }
-            #mensajeCentral .linea2 { font-size: clamp(1rem, 3vw, 1.6rem); }
-            #mensajeCentral .linea3 { font-size: clamp(0.8rem, 2vw, 1.2rem); }
-            #mensajeCentral .linea4 { font-size: clamp(1.2rem, 3.5vw, 1.8rem); }
+            #mensajeCentral .linea1 { font-size: clamp(1.4rem, 4.5vw, 2.2rem); }
+            #mensajeCentral .linea2 { font-size: clamp(1.2rem, 3.5vw, 1.8rem); }
+            #mensajeCentral .linea3 { font-size: clamp(0.9rem, 2.5vw, 1.3rem); }
+            #mensajeCentral .linea4 { font-size: clamp(1.4rem, 4vw, 2rem); }
         }
     </style>
 </head>
@@ -466,7 +456,7 @@
 <!-- CANVAS DE THREE.JS -->
 <div id="galaxyCanvas"></div>
 
-<!-- MENSAJE CENTRAL EN EL CORAZÓN - TEXTO EN MÚLTIPLES LÍNEAS -->
+<!-- MENSAJE CENTRAL - TEXTO HTML PURO (SIN LAG) -->
 <div id="mensajeCentral">
     <span class="linea1">♥︎ Te AMO mushísimo ♥︎</span>
     <span class="linea2">mi bella niñita siempre PERFECTA</span>
@@ -496,7 +486,7 @@
 
 <script>
     // ================================================================
-    //  CONFIGURACIÓN CENTRALIZADA (OPTIMIZADA - SIN LLUVIA)
+    //  CONFIGURACIÓN CENTRALIZADA (SIN LLUVIA - SIN TEXTO 3D)
     // ================================================================
     const CONFIG = {
         nombre: "May",
@@ -637,7 +627,7 @@
     //  INICIALIZAR GALAXIA
     // ================================================================
     function iniciarGalaxia() {
-        // Mostrar el mensaje central
+        // Mostrar el mensaje central HTML
         document.getElementById('mensajeCentral').style.display = 'block';
 
         const container = document.getElementById('galaxyCanvas');
@@ -1193,7 +1183,7 @@
     }
 
     // ================================================================
-    //  ANIMACIÓN PRINCIPAL (OPTIMIZADA - SIN EFECTO VIENTO)
+    //  ANIMACIÓN PRINCIPAL (SIN TEXTO 3D - SIN EFECTO VIENTO)
     // ================================================================
     function animar() {
         requestAnimationFrame(animar);
@@ -1264,8 +1254,6 @@
             img.borde.lookAt(0, 0, 0);
             img.borde.material.opacity = 0.2 + Math.sin(tiempo * 2 + img.angulo) * 0.1;
         });
-
-        // 5. EFECTO VIENTO ELIMINADO - ¡Adiós lag!
 
         renderer.render(scene, camera);
     }
