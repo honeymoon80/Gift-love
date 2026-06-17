@@ -170,6 +170,69 @@
         }
         #galaxyCanvas.active { display: block; }
 
+        /* MENSAJE CENTRAL EN EL CORAZÓN - TEXTO EN MÚLTIPLES LÍNEAS */
+        #mensajeCentral {
+            position: fixed;
+            z-index: 35;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #fff;
+            pointer-events: none;
+            text-shadow: 
+                0 0 30px #ff6b81,
+                0 0 60px #ff85a2,
+                0 0 90px #ffb6c1,
+                0 0 120px #ff6b81;
+            animation: brilloMensaje 2s ease-in-out infinite alternate;
+            max-width: 90vw;
+            line-height: 1.4;
+        }
+        #mensajeCentral .linea1 {
+            font-size: clamp(1.8rem, 5vw, 3.5rem);
+            font-weight: 700;
+            background: linear-gradient(45deg, #FFB6C1, #FF6B81, #FFD1DC, #FF85A2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+        }
+        #mensajeCentral .linea2 {
+            font-size: clamp(1.4rem, 3.5vw, 2.8rem);
+            font-weight: 600;
+            background: linear-gradient(45deg, #FFD1DC, #FFB6C1, #FF85A2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin-top: 0.2rem;
+        }
+        #mensajeCentral .linea3 {
+            font-size: clamp(1.0rem, 2.5vw, 2.0rem);
+            font-weight: 500;
+            background: linear-gradient(45deg, #FFB6C1, #FFDAB9, #FF85A2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin-top: 0.2rem;
+        }
+        #mensajeCentral .linea4 {
+            font-size: clamp(1.8rem, 4vw, 3.0rem);
+            font-weight: 700;
+            background: linear-gradient(45deg, #FF6B81, #FF85A2, #FFB6C1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin-top: 0.3rem;
+        }
+        @keyframes brilloMensaje {
+            0% { text-shadow: 0 0 30px #ff6b81, 0 0 60px #ff85a2, 0 0 90px #ffb6c1; }
+            100% { text-shadow: 0 0 50px #ff6b81, 0 0 90px #ff85a2, 0 0 130px #ffb6c1, 0 0 180px #ff6b81; }
+        }
+
         /* Reproductor de música */
         #musicPlayer {
             position: fixed;
@@ -358,97 +421,6 @@
             box-shadow: 0 0 30px #ff6b8166;
         }
 
-        /* Lluvia de corazones y frases (CSS) */
-        .lluvia-item {
-            position: fixed;
-            z-index: 20;
-            pointer-events: none;
-            font-size: 1.5rem;
-            animation: caerLluvia linear forwards;
-            opacity: 0.9;
-            text-shadow: 0 0 20px rgba(255, 107, 129, 0.5);
-        }
-        @keyframes caerLluvia {
-            0% {
-                transform: translateY(-100px) rotate(0deg) scale(0.5);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.9;
-                transform: translateY(0px) rotate(10deg) scale(1);
-            }
-            90% {
-                opacity: 0.9;
-            }
-            100% {
-                transform: translateY(110vh) rotate(720deg) scale(0.3);
-                opacity: 0;
-            }
-        }
-
-        /* Mensaje central en el corazón - TEXTO GRANDE Y VISIBLE */
-        #mensajeCentral {
-            position: fixed;
-            z-index: 35;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: #fff;
-            pointer-events: none;
-            text-shadow: 
-                0 0 30px #ff6b81,
-                0 0 60px #ff85a2,
-                0 0 90px #ffb6c1,
-                0 0 120px #ff6b81;
-            animation: brilloMensaje 2s ease-in-out infinite alternate;
-            max-width: 90vw;
-            line-height: 1.4;
-        }
-        #mensajeCentral .linea1 {
-            font-size: clamp(1.8rem, 5vw, 3.5rem);
-            font-weight: 700;
-            background: linear-gradient(45deg, #FFB6C1, #FF6B81, #FFD1DC, #FF85A2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            display: block;
-        }
-        #mensajeCentral .linea2 {
-            font-size: clamp(1.4rem, 3.5vw, 2.8rem);
-            font-weight: 600;
-            background: linear-gradient(45deg, #FFD1DC, #FFB6C1, #FF85A2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            display: block;
-            margin-top: 0.2rem;
-        }
-        #mensajeCentral .linea3 {
-            font-size: clamp(1.0rem, 2.5vw, 2.0rem);
-            font-weight: 500;
-            background: linear-gradient(45deg, #FFB6C1, #FFDAB9, #FF85A2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            display: block;
-            margin-top: 0.2rem;
-        }
-        #mensajeCentral .linea4 {
-            font-size: clamp(1.8rem, 4vw, 3.0rem);
-            font-weight: 700;
-            background: linear-gradient(45deg, #FF6B81, #FF85A2, #FFB6C1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            display: block;
-            margin-top: 0.3rem;
-        }
-        @keyframes brilloMensaje {
-            0% { text-shadow: 0 0 30px #ff6b81, 0 0 60px #ff85a2, 0 0 90px #ffb6c1; }
-            100% { text-shadow: 0 0 50px #ff6b81, 0 0 90px #ff85a2, 0 0 130px #ffb6c1, 0 0 180px #ff6b81; }
-        }
-
         /* Responsive */
         @media (max-width: 600px) {
             #musicPlayer { bottom: 12px; right: 12px; padding: 6px 10px; min-width: 150px; gap: 6px; }
@@ -494,7 +466,7 @@
 <!-- CANVAS DE THREE.JS -->
 <div id="galaxyCanvas"></div>
 
-<!-- MENSAJE CENTRAL EN EL CORAZÓN (TEXTO GRANDE Y VISIBLE) -->
+<!-- MENSAJE CENTRAL EN EL CORAZÓN - TEXTO EN MÚLTIPLES LÍNEAS -->
 <div id="mensajeCentral">
     <span class="linea1">♥︎ Te AMO mushísimo ♥︎</span>
     <span class="linea2">mi bella niñita siempre PERFECTA</span>
@@ -524,7 +496,7 @@
 
 <script>
     // ================================================================
-    //  CONFIGURACIÓN CENTRALIZADA
+    //  CONFIGURACIÓN CENTRALIZADA (OPTIMIZADA - SIN LLUVIA)
     // ================================================================
     const CONFIG = {
         nombre: "May",
@@ -554,17 +526,7 @@
         imagenes: ["foto1.jpg", "foto2.jpg", "foto3.jpg", "foto4.jpg"],
         velocidadOrbita: 0.002,
         cantidadParticulas: 3500,
-        duracionCarga: 2.5,
-        frasesLluvia: [
-            "Te amo May 💖",
-            "Eres mi sol ✨",
-            "Siempre tú 🌸",
-            "Mi alma 💫",
-            "Eres perfecta 🌹",
-            "Te adoro ❤️",
-            "Eres mi vida 💕",
-            "Mi razón de ser 🌺"
-        ]
+        duracionCarga: 2.5
     };
 
     // ================================================================
@@ -581,7 +543,6 @@
     let isPlaying = false;
     let cancionesLista = [];
     let imagenTextures = [];
-    let lluviaActiva = true;
 
     // ================================================================
     //  FUNCIONES DE INICIO Y CARGA
@@ -592,7 +553,6 @@
             mostrarCarga();
         });
         configurarReproductor();
-        configurarPalabrasClave();
     }
 
     function mostrarCarga() {
@@ -702,7 +662,6 @@
         crearPalabrasClave();
         crearImagenes();
         efectoNacimiento();
-        iniciarLluvia();
 
         window.addEventListener('resize', onResize);
         window.addEventListener('mousemove', onMouseMove);
@@ -745,7 +704,7 @@
             size: 0.08,
             vertexColors: true,
             transparent: true,
-            opacity: 0.85,
+            opacity: 0.9,
             blending: THREE.AdditiveBlending,
             depthWrite: false,
             sizeAttenuation: true
@@ -812,10 +771,6 @@
     // ================================================================
     //  PALABRAS CLAVE
     // ================================================================
-    function configurarPalabrasClave() {
-        // Solo creamos las palabras clave en la fase 2
-    }
-
     function crearPalabrasClave() {
         const palabras = Object.keys(CONFIG.palabrasClave);
         const posiciones = [
@@ -949,45 +904,10 @@
     }
 
     // ================================================================
-    //  LLUVIA DE CORAZONES Y FRASES ROMÁNTICAS
-    // ================================================================
-    function iniciarLluvia() {
-        const emojis = ['❤️', '💖', '💕', '💗', '💝', '✨', '🌸', '🌹', '💫', '🌺'];
-        const frases = CONFIG.frasesLluvia;
-        
-        setInterval(() => {
-            if (!lluviaActiva) return;
-            
-            const cantidad = 2 + Math.floor(Math.random() * 3);
-            for (let i = 0; i < cantidad; i++) {
-                const esFrase = Math.random() > 0.5;
-                const contenido = esFrase ? 
-                    frases[Math.floor(Math.random() * frases.length)] : 
-                    emojis[Math.floor(Math.random() * emojis.length)];
-                
-                const div = document.createElement('div');
-                div.className = 'lluvia-item';
-                div.textContent = contenido;
-                div.style.left = (Math.random() * 90 + 5) + '%';
-                div.style.fontSize = (1.2 + Math.random() * 1.5) + 'rem';
-                div.style.animationDuration = (6 + Math.random() * 6) + 's';
-                div.style.color = CONFIG.colores[Math.floor(Math.random() * CONFIG.colores.length)];
-                div.style.textShadow = `0 0 30px ${CONFIG.colores[Math.floor(Math.random() * CONFIG.colores.length)]}`;
-                
-                document.body.appendChild(div);
-                
-                setTimeout(() => {
-                    if (div.parentNode) div.remove();
-                }, 12000);
-            }
-        }, 800);
-    }
-
-    // ================================================================
     //  EFECTO NACIMIENTO DE ESTRELLAS
     // ================================================================
     function efectoNacimiento() {
-        const count = 500;
+        const count = 300;
         const geometria = new THREE.BufferGeometry();
         const pos = new Float32Array(count * 3);
         const col = new Float32Array(count * 3);
@@ -1017,7 +937,7 @@
         scene.add(puntos);
 
         let startTime = Date.now();
-        const duracion = 2000;
+        const duracion = 1500;
 
         function expandir() {
             const elapsed = Date.now() - startTime;
@@ -1232,14 +1152,13 @@
     function onGalaxyClick(event) {
         const target = event.target;
         if (target.closest('#musicPlayer') || target.closest('.mensaje-emergente') || 
-            target.closest('.palabra-clave') || target.closest('.frase-flotante') ||
-            target.closest('#mensajeCentral')) {
+            target.closest('.palabra-clave') || target.closest('#mensajeCentral')) {
             return;
         }
 
         const emojis = ['💖', '✨', '🌸', '🌹', '💫', '🌺', '❤️‍🔥', '💕'];
         const frases = ['Te amo May', 'Eres mi sol', 'Siempre tú', 'Mi alma', 'Eres perfecta'];
-        const count = 30 + Math.floor(Math.random() * 20);
+        const count = 20 + Math.floor(Math.random() * 15);
 
         for (let i = 0; i < count; i++) {
             const emoji = emojis[Math.floor(Math.random() * emojis.length)];
@@ -1274,7 +1193,7 @@
     }
 
     // ================================================================
-    //  ANIMACIÓN PRINCIPAL
+    //  ANIMACIÓN PRINCIPAL (OPTIMIZADA - SIN EFECTO VIENTO)
     // ================================================================
     function animar() {
         requestAnimationFrame(animar);
@@ -1346,17 +1265,7 @@
             img.borde.material.opacity = 0.2 + Math.sin(tiempo * 2 + img.angulo) * 0.1;
         });
 
-        // 5. Efecto de viento (partículas se apartan del mouse)
-        if (particulas.length > 0) {
-            const pos = particulas[0].geometria.attributes.position.array;
-            const targetX = mouse.x * 0.3;
-            const targetY = mouse.y * 0.3;
-            for (let i = 0; i < pos.length; i += 3) {
-                pos[i] += (pos[i] + targetX * 0.05 - pos[i]) * 0.02;
-                pos[i+1] += (pos[i+1] + targetY * 0.05 - pos[i+1]) * 0.02;
-            }
-            particulas[0].geometria.attributes.position.needsUpdate = true;
-        }
+        // 5. EFECTO VIENTO ELIMINADO - ¡Adiós lag!
 
         renderer.render(scene, camera);
     }
