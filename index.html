@@ -2,41 +2,69 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <title>Para mi amada May</title>
     <style>
-        body { margin: 0; background: radial-gradient(circle, #1a0a1a, #000000); color: #fff; font-family: sans-serif; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .contenedor { z-index: 10; text-align: center; padding: 40px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; }
-        #play-btn { cursor: pointer; background: #ff4d6d; border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: bold; margin-top: 20px; }
-        .corazon { position: absolute; top: -10%; color: #ff4d6d; font-size: 24px; animation: caer 6s linear infinite; }
-        @keyframes caer { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
+        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; overflow: hidden; cursor: crosshair; }
+        #canvas { position: absolute; top: 0; left: 0; z-index: 1; }
+        .ui { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2; text-align: center; pointer-events: none; }
+        h1 { font-size: 3rem; color: #ff4d6d; text-shadow: 0 0 15px #ff4d6d; pointer-events: auto; }
+        button { padding: 15px 30px; background: #ff4d6d; border: none; color: white; border-radius: 25px; cursor: pointer; pointer-events: auto; }
     </style>
 </head>
 <body>
-    <div class="contenedor">
+    <canvas id="canvas"></canvas>
+    <div class="ui">
         <h1>Para mi amada May</h1>
-        <p>Cada momento contigo es mi tesoro más grande.</p>
-        <button id="play-btn" onclick="playMusic()">Reproducir nuestra canción</button>
-        <audio id="bg-music" loop>
-            <source src="assets/musica.mp3" type="audio/mpeg">
-        </audio>
+        <button id="play-btn" onclick="iniciar()">¡Presiona para ver la magia!</button>
     </div>
+    <audio id="audio" loop><source src="assets/musica.mp3" type="audio/mpeg"></audio>
 
     <script>
-        function playMusic() {
-            var audio = document.getElementById("bg-music");
-            audio.play();
-            document.getElementById("play-btn").style.display = "none";
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        let particles = [];
+
+        class Particle {
+            constructor(x, y, color, type = 'heart') {
+                this.x = x; this.y = y; this.size = Math.random() * 5 + 2;
+                this.speedX = Math.random() * 4 - 2; this.speedY = Math.random() * 4 - 2;
+                this.color = color; this.type = type; this.text = ['Amor', 'May', 'Te amo', 'Vida'][Math.floor(Math.random()*4)];
+            }
+            update() { this.x += this.speedX; this.y += this.speedY; this.size *= 0.95; }
+            draw() {
+                ctx.fillStyle = this.color;
+                if(this.type === 'emoji') { ctx.font = '20px Arial'; ctx.fillText('✨', this.x, this.y); }
+                else if(this.type === 'text') { ctx.font = '15px Arial'; ctx.fillText(this.text, this.x, this.y); }
+                else { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
+            }
         }
 
-        function crearCorazon() {
-            const c = document.createElement('div');
-            c.innerHTML = '❤';
-            c.className = 'corazon';
-            c.style.left = Math.random() * 100 + 'vw';
-            c.style.animationDuration = Math.random() * 3 + 4 + 's';
-            document.body.appendChild(c);
-            setTimeout(() => c.remove(), 7000);
+        function crearGalaxia() {
+            for(let i=0; i<100; i++) {
+                let angle = Math.random() * Math.PI * 2;
+                let r = Math.random() * 100;
+                particles.push(new Particle(canvas.width/2 + Math.cos(angle)*r, canvas.height/2 + Math.sin(angle)*r, '#ff4d6d'));
+            }
         }
-        setInterval(crearCorazon, 400);
+
+        window.addEventListener('click', (e) => {
+            for(let i=0; i<10; i++) particles.push(new Particle(e.clientX, e.clientY, '#fff', 'emoji'));
+            for(let i=0; i<5; i++) particles.push(new Particle(e.clientX, e.clientY, '#ff4d6d', 'text'));
+        });
+
+        function iniciar() {
+            document.getElementById('audio').play();
+            document.getElementById('play-btn').style.display = 'none';
+            setInterval(crearGalaxia, 2000);
+            animate();
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0,0,0,0.1)'; ctx.fillRect(0,0, canvas.width, canvas.height);
+            particles.forEach((p, i) => { p.update(); p.draw(); if(p.size < 0.5) particles.splice(i, 1); });
+            requestAnimationFrame(animate);
+        }
     </script>
 </body>
 </html>
