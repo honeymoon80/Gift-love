@@ -67,7 +67,7 @@
             100% { box-shadow: 0 0 20px #ff8da1aa; transform: scale(1); }
         }
 
-        /* --- MENÚ DE CARGA (FASE 1.5) --- */
+        /* --- MENÚ DE CARGA --- */
         #loadingScreen {
             position: fixed;
             inset: 0;
@@ -161,7 +161,7 @@
             font-weight: 300;
         }
 
-        /* --- FASE 2: GALAXIA (Three.js canvas ocupa todo) --- */
+        /* --- FASE 2: GALAXIA --- */
         #galaxyCanvas {
             position: fixed;
             inset: 0;
@@ -170,7 +170,7 @@
         }
         #galaxyCanvas.active { display: block; }
 
-        /* Reproductor de música (esquina inferior derecha) */
+        /* Reproductor de música */
         #musicPlayer {
             position: fixed;
             bottom: 25px;
@@ -300,7 +300,7 @@
         }
         .lista-canciones button:hover { background: #ffb6c122; color: #fff; }
 
-        /* Mensajes emergentes (carta flotante) */
+        /* Mensajes emergentes */
         .mensaje-emergente {
             position: fixed;
             z-index: 200;
@@ -333,7 +333,7 @@
             cursor: pointer;
         }
 
-        /* Palabras clave (flotando en la galaxia) */
+        /* Palabras clave */
         .palabra-clave {
             position: fixed;
             z-index: 50;
@@ -356,6 +356,45 @@
             background: rgba(255, 200, 210, 0.2);
             border-color: #ff8da1;
             box-shadow: 0 0 30px #ff6b8166;
+        }
+
+        /* Texto 3D flotante (mensaje especial) */
+        #texto3DContainer {
+            position: fixed;
+            z-index: 30;
+            pointer-events: none;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        /* Lluvia de corazones y frases (CSS) */
+        .lluvia-item {
+            position: fixed;
+            z-index: 20;
+            pointer-events: none;
+            font-size: 1.5rem;
+            animation: caerLluvia linear forwards;
+            opacity: 0.9;
+            text-shadow: 0 0 20px rgba(255, 107, 129, 0.5);
+        }
+        @keyframes caerLluvia {
+            0% {
+                transform: translateY(-100px) rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.9;
+                transform: translateY(0px) rotate(10deg) scale(1);
+            }
+            90% {
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(110vh) rotate(720deg) scale(0.3);
+                opacity: 0;
+            }
         }
 
         /* Responsive */
@@ -396,8 +435,11 @@
     </div>
 </div>
 
-<!-- CANVAS DE THREE.JS (GALAXIA) -->
+<!-- CANVAS DE THREE.JS -->
 <div id="galaxyCanvas"></div>
+
+<!-- CONTENEDOR PARA TEXTO 3D -->
+<div id="texto3DContainer"></div>
 
 <!-- REPRODUCTOR DE MÚSICA -->
 <div id="musicPlayer">
@@ -452,8 +494,17 @@
         velocidadOrbita: 0.002,
         cantidadParticulas: 3500,
         duracionCarga: 2.5,
-        // Texto especial que formará el corazón con partículas
-        textoCorazon: "♥︎te AMO mushísimo mi bella niñita siempre PERFECTA de todito mi korashon HEHE(≧▽≦)/♥︎"
+        textoEspecial: "♥︎ Te AMO mushísimo mi bella niñita siempre PERFECTA de todito mi korashon HEHE(≧▽≦)/ ♥︎",
+        frasesLluvia: [
+            "Te amo May 💖",
+            "Eres mi sol ✨",
+            "Siempre tú 🌸",
+            "Mi alma 💫",
+            "Eres perfecta 🌹",
+            "Te adoro ❤️",
+            "Eres mi vida 💕",
+            "Mi razón de ser 🌺"
+        ]
     };
 
     // ================================================================
@@ -461,19 +512,17 @@
     // ================================================================
     let scene, camera, renderer;
     let particulas = [];
-    let corazonesOrbitando = [];
     let frasesObjetos = [];
     let palabrasClaveObjetos = [];
     let imagenesOrbitando = [];
     let mouse = new THREE.Vector2(0, 0);
     let tiempo = 0;
-    let cargaProgreso = 0;
-    let cargaCompleta = false;
-    let cancionActual = null;
     let audio = new Audio();
     let isPlaying = false;
     let cancionesLista = [];
     let imagenTextures = [];
+    let lluviaActiva = true;
+    let texto3D = null;
 
     // ================================================================
     //  FUNCIONES DE INICIO Y CARGA
@@ -497,7 +546,6 @@
         const inicio = Date.now();
         let acelerado = false;
 
-        // Dibujar corazón con partículas en el canvas del loader
         function dibujarCorazon(prog) {
             ctx.clearRect(0, 0, 100, 100);
             const cx = 50, cy = 50;
@@ -507,7 +555,6 @@
             for (let i = 0; i < total; i++) {
                 const t = i / total;
                 const ang = t * Math.PI * 2;
-                // Ecuación paramétrica del corazón
                 const x = 16 * Math.pow(Math.sin(ang), 3);
                 const y = 13 * Math.cos(ang) - 5 * Math.cos(2*ang) - 2 * Math.cos(3*ang) - Math.cos(4*ang);
                 const px = cx + x * 2.2;
@@ -521,7 +568,6 @@
                 ctx.shadowBlur = (i < filled) ? 8 : 0;
                 ctx.fill();
             }
-            // Efecto latido
             if (prog > 0.2) {
                 const pulso = 1 + Math.sin(Date.now() / 300) * 0.03 * (prog);
                 ctx.save();
@@ -538,24 +584,19 @@
             let prog = Math.min(elapsed / duracion, 1);
             if (acelerado) prog = Math.min(prog + 0.03, 1);
             progreso = prog;
-            cargaProgreso = prog;
 
-            // Actualizar barra circular
             const circle = document.getElementById('progressCircleFill');
             const offset = 380 - (380 * prog);
             circle.style.strokeDashoffset = offset;
 
-            // Dibujar corazón
             dibujarCorazon(prog);
 
-            // Texto
             document.getElementById('loadingText').textContent = 
                 prog < 1 ? `Cargando galaxia... ${Math.round(prog*100)}%` : '¡Listo! 💫';
 
             if (prog < 1) {
                 requestAnimationFrame(actualizarCarga);
             } else {
-                // Carga completa → transición a galaxia
                 setTimeout(() => {
                     loading.style.opacity = '0';
                     setTimeout(() => {
@@ -566,7 +607,6 @@
             }
         }
 
-        // Click para acelerar
         document.getElementById('heartLoader').addEventListener('click', () => {
             acelerado = true;
         });
@@ -575,175 +615,73 @@
     }
 
     // ================================================================
-    //  INICIALIZAR GALAXIA (Three.js)
+    //  INICIALIZAR GALAXIA
     // ================================================================
     function iniciarGalaxia() {
         const container = document.getElementById('galaxyCanvas');
         container.classList.add('active');
 
-        // Escena
         scene = new THREE.Scene();
         scene.background = new THREE.Color(0x0f0510);
 
-        // Cámara
         const aspect = window.innerWidth / window.innerHeight;
         camera = new THREE.PerspectiveCamera(60, aspect, 0.1, 1000);
         camera.position.set(0, 2, 12);
         camera.lookAt(0, 0, 0);
 
-        // Renderer
         renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
-        // Cargar texturas de imágenes
         cargarTexturas();
-
-        // Crear partículas del corazón central CON TEXTO FORMADO
-        crearCorazonConTexto();
-
-        // Crear frases orbitando
+        crearCorazonParticulas();
+        crearTexto3D();
         crearFrases();
-
-        // Crear palabras clave
         crearPalabrasClave();
-
-        // Crear imágenes orbitando
         crearImagenes();
-
-        // Efecto de nacimiento de estrellas
         efectoNacimiento();
+        iniciarLluvia();
 
-        // Eventos
         window.addEventListener('resize', onResize);
         window.addEventListener('mousemove', onMouseMove);
         window.addEventListener('click', onGalaxyClick);
 
-        // Loop de animación
         animar();
     }
 
     // ================================================================
-    //  CORAZÓN CENTRAL CON TEXTO FORMADO POR PARTÍCULAS
+    //  CORAZÓN DE PARTÍCULAS (el original que gira)
     // ================================================================
-    function crearCorazonConTexto() {
-        // Primero creamos un canvas para renderizar el texto
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = 800;
-        canvas.height = 600;
-        
-        // Configurar texto
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 32px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        
-        // Texto multilínea
-        const texto = CONFIG.textoCorazon;
-        const lineas = [];
-        let lineaActual = '';
-        const palabras = texto.split(' ');
-        
-        for (let palabra of palabras) {
-            const prueba = lineaActual + ' ' + palabra;
-            const metrics = ctx.measureText(prueba);
-            if (metrics.width > 700 && lineaActual.length > 0) {
-                lineas.push(lineaActual.trim());
-                lineaActual = palabra;
-            } else {
-                lineaActual = prueba;
-            }
-        }
-        if (lineaActual.trim().length > 0) lineas.push(lineaActual.trim());
-        
-        // Si no hay líneas (texto corto), usar una sola línea
-        if (lineas.length === 0) lineas.push(texto);
-        
-        // Ajustar tamaño de fuente según líneas
-        const fontSize = Math.min(36, 700 / Math.max(...lineas.map(l => l.length)));
-        ctx.font = `bold ${fontSize}px Arial`;
-        
-        // Dibujar texto en canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        
-        const lineHeight = fontSize * 1.4;
-        const totalHeight = lineas.length * lineHeight;
-        const startY = (canvas.height - totalHeight) / 2 + lineHeight/2;
-        
-        lineas.forEach((linea, index) => {
-            ctx.fillText(linea, canvas.width/2, startY + index * lineHeight);
-        });
-        
-        // Obtener datos de píxeles
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
-        
-        // Recoger puntos donde hay texto (píxeles blancos)
-        const puntosTexto = [];
-        const step = 2; // Reducir resolución para optimizar
-        for (let y = 0; y < canvas.height; y += step) {
-            for (let x = 0; x < canvas.width; x += step) {
-                const index = (y * canvas.width + x) * 4;
-                // Si el píxel es blanco (texto)
-                if (data[index] > 128) {
-                    // Normalizar coordenadas al espacio 3D
-                    const px = (x / canvas.width) * 10 - 5; // Rango -5 a 5
-                    const py = -(y / canvas.height) * 6 + 3; // Rango -3 a 3 (invertido)
-                    puntosTexto.push({x: px, y: py});
-                }
-            }
-        }
-        
-        // Limitar cantidad de partículas
-        const maxParticulas = CONFIG.cantidadParticulas;
-        let selectedPoints = puntosTexto;
-        if (puntosTexto.length > maxParticulas) {
-            // Muestrear aleatoriamente
-            selectedPoints = [];
-            const indices = new Set();
-            while (indices.size < maxParticulas) {
-                indices.add(Math.floor(Math.random() * puntosTexto.length));
-            }
-            for (let idx of indices) {
-                selectedPoints.push(puntosTexto[idx]);
-            }
-        }
-        
-        // Crear geometría con los puntos
+    function crearCorazonParticulas() {
         const geometria = new THREE.BufferGeometry();
-        const count = selectedPoints.length;
+        const count = CONFIG.cantidadParticulas;
         const posiciones = new Float32Array(count * 3);
         const colores = new Float32Array(count * 3);
-        const sizes = new Float32Array(count);
         const coloresPaleta = CONFIG.colores.map(c => new THREE.Color(c));
-        
+
         for (let i = 0; i < count; i++) {
-            const punto = selectedPoints[i];
-            // Añadir profundidad aleatoria
-            const z = (Math.random() - 0.5) * 0.8;
-            posiciones[i*3] = punto.x;
-            posiciones[i*3+1] = punto.y;
+            const t = Math.random() * Math.PI * 2;
+            const rFactor = 0.5 + 0.5 * Math.random();
+            const x = 16 * Math.pow(Math.sin(t), 3) * rFactor * 0.7;
+            const y = (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * rFactor * 0.7;
+            const z = (Math.random() - 0.5) * 1.2;
+
+            posiciones[i*3] = x;
+            posiciones[i*3+1] = y;
             posiciones[i*3+2] = z;
-            
+
             const color = coloresPaleta[Math.floor(Math.random() * coloresPaleta.length)];
             colores[i*3] = color.r;
             colores[i*3+1] = color.g;
             colores[i*3+2] = color.b;
-            
-            sizes[i] = 0.05 + Math.random() * 0.08;
         }
-        
+
         geometria.setAttribute('position', new THREE.BufferAttribute(posiciones, 3));
         geometria.setAttribute('color', new THREE.BufferAttribute(colores, 3));
-        geometria.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-        
+
         const material = new THREE.PointsMaterial({
-            size: 0.1,
+            size: 0.08,
             vertexColors: true,
             transparent: true,
             opacity: 0.95,
@@ -751,21 +689,91 @@
             depthWrite: false,
             sizeAttenuation: true
         });
-        
+
         const puntos = new THREE.Points(geometria, material);
-        puntos.name = 'corazonTexto';
+        puntos.name = 'corazonCentral';
         scene.add(puntos);
-        
-        // Guardar referencia para animación
+
         particulas.push({
             mesh: puntos,
             geometria: geometria,
             material: material,
             escala: 1,
             velocidadOrbita: CONFIG.velocidadOrbita,
-            // Guardar posiciones originales para efectos
             posicionesOriginales: posiciones.slice()
         });
+    }
+
+    // ================================================================
+    //  TEXTO 3D FLOTANTE (mensaje especial)
+    // ================================================================
+    function crearTexto3D() {
+        // Usamos un sprite con canvas para simular texto 3D
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 1024;
+        canvas.height = 256;
+
+        // Fondo transparente con glow
+        const grad = ctx.createLinearGradient(0, 0, canvas.width, 0);
+        grad.addColorStop(0, 'rgba(255, 182, 193, 0)');
+        grad.addColorStop(0.1, 'rgba(255, 182, 193, 0.1)');
+        grad.addColorStop(0.5, 'rgba(255, 182, 193, 0.2)');
+        grad.addColorStop(0.9, 'rgba(255, 182, 193, 0.1)');
+        grad.addColorStop(1, 'rgba(255, 182, 193, 0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Texto con sombra y brillo
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        // Sombra glow
+        ctx.shadowColor = '#ff6b81';
+        ctx.shadowBlur = 40;
+        
+        // Texto principal
+        const texto = CONFIG.textoEspecial;
+        const fontSize = Math.min(38, 900 / texto.length * 2);
+        ctx.font = `bold ${fontSize}px 'Segoe UI', Arial, sans-serif`;
+        
+        // Gradiente para el texto
+        const gradText = ctx.createLinearGradient(0, 0, canvas.width, 0);
+        const colores = CONFIG.colores;
+        gradText.addColorStop(0, colores[0]);
+        gradText.addColorStop(0.25, colores[1]);
+        gradText.addColorStop(0.5, colores[2]);
+        gradText.addColorStop(0.75, colores[3]);
+        gradText.addColorStop(1, colores[4]);
+        ctx.fillStyle = gradText;
+        ctx.shadowColor = '#ff6b81';
+        ctx.shadowBlur = 30;
+        ctx.fillText(texto, canvas.width/2, canvas.height/2);
+
+        // Brillo extra
+        ctx.shadowBlur = 60;
+        ctx.shadowColor = '#ff85a2';
+        ctx.globalAlpha = 0.3;
+        ctx.fillText(texto, canvas.width/2, canvas.height/2);
+        ctx.globalAlpha = 1;
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.needsUpdate = true;
+
+        const material = new THREE.SpriteMaterial({
+            map: texture,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            depthWrite: false,
+            opacity: 0.9
+        });
+
+        const sprite = new THREE.Sprite(material);
+        sprite.scale.set(12, 3, 1);
+        sprite.position.set(0, 3.8, 0);
+        sprite.name = 'texto3D';
+        scene.add(sprite);
+        texto3D = sprite;
     }
 
     // ================================================================
@@ -773,7 +781,7 @@
     // ================================================================
     function crearFrases() {
         const frases = CONFIG.frases;
-        const radio = 3.8;
+        const radio = 4.5;
         frases.forEach((texto, idx) => {
             const angulo = (idx / frases.length) * Math.PI * 2;
             const div = document.createElement('div');
@@ -796,7 +804,6 @@
             div.style.whiteSpace = 'nowrap';
             document.body.appendChild(div);
 
-            // Evento click para mostrar mensaje largo
             div.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const mensaje = CONFIG.mensajesLargos[texto] || 'Te amo, May 💖';
@@ -814,16 +821,20 @@
     }
 
     // ================================================================
-    //  PALABRAS CLAVE (interactivas)
+    //  PALABRAS CLAVE
     // ================================================================
+    function configurarPalabrasClave() {
+        // Solo creamos las palabras clave en la fase 2
+    }
+
     function crearPalabrasClave() {
         const palabras = Object.keys(CONFIG.palabrasClave);
         const posiciones = [
-            { x: -5, y: 2.5 },
-            { x: 5, y: 2.5 },
-            { x: -4.5, y: -2 },
-            { x: 4.5, y: -2 },
-            { x: 0, y: -3.5 }
+            { x: -5.5, y: 2.0 },
+            { x: 5.5, y: 2.0 },
+            { x: -5.0, y: -2.5 },
+            { x: 5.0, y: -2.5 },
+            { x: 0, y: -4.0 }
         ];
         palabras.forEach((palabra, idx) => {
             const div = document.createElement('div');
@@ -832,7 +843,6 @@
             const pos = posiciones[idx % posiciones.length];
             div.dataset.x = pos.x;
             div.dataset.y = pos.y;
-            div.dataset.z = 0;
             div.style.position = 'fixed';
             div.style.zIndex = '50';
             document.body.appendChild(div);
@@ -868,14 +878,13 @@
                 },
                 undefined,
                 () => {
-                    // Fallback: crear textura de color
                     const canvas = document.createElement('canvas');
                     canvas.width = 128; canvas.height = 128;
                     const ctx = canvas.getContext('2d');
                     ctx.fillStyle = '#ffb6c1';
                     ctx.fillRect(0, 0, 128, 128);
                     ctx.fillStyle = '#fff';
-                    ctx.font = '20px sans-serif';
+                    ctx.font = '30px sans-serif';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     ctx.fillText('💖', 64, 64);
@@ -902,7 +911,7 @@
             imagenTextures = [tex, tex, tex, tex];
         }
 
-        const radios = [4.2, 5.0, 3.5, 4.8];
+        const radios = [4.8, 5.6, 4.0, 5.2];
         const sizes = [1.2, 1.0, 1.4, 0.9];
         CONFIG.imagenes.forEach((_, idx) => {
             const tex = imagenTextures[idx % imagenTextures.length];
@@ -924,8 +933,7 @@
             mesh.userData = {
                 angulo: angulo,
                 radio: radio,
-                velocidad: 0.002 + Math.random() * 0.002,
-                offsetY: Math.random() * 2
+                velocidad: 0.002 + Math.random() * 0.002
             };
             scene.add(mesh);
 
@@ -949,6 +957,41 @@
                 velocidad: 0.002 + Math.random() * 0.002
             });
         });
+    }
+
+    // ================================================================
+    //  LLUVIA DE CORAZONES Y FRASES ROMÁNTICAS
+    // ================================================================
+    function iniciarLluvia() {
+        const emojis = ['❤️', '💖', '💕', '💗', '💝', '✨', '🌸', '🌹', '💫', '🌺'];
+        const frases = CONFIG.frasesLluvia;
+        
+        setInterval(() => {
+            if (!lluviaActiva) return;
+            
+            const cantidad = 2 + Math.floor(Math.random() * 3);
+            for (let i = 0; i < cantidad; i++) {
+                const esFrase = Math.random() > 0.5;
+                const contenido = esFrase ? 
+                    frases[Math.floor(Math.random() * frases.length)] : 
+                    emojis[Math.floor(Math.random() * emojis.length)];
+                
+                const div = document.createElement('div');
+                div.className = 'lluvia-item';
+                div.textContent = contenido;
+                div.style.left = (Math.random() * 90 + 5) + '%';
+                div.style.fontSize = (1.2 + Math.random() * 1.5) + 'rem';
+                div.style.animationDuration = (6 + Math.random() * 6) + 's';
+                div.style.color = CONFIG.colores[Math.floor(Math.random() * CONFIG.colores.length)];
+                div.style.textShadow = `0 0 30px ${CONFIG.colores[Math.floor(Math.random() * CONFIG.colores.length)]}`;
+                
+                document.body.appendChild(div);
+                
+                setTimeout(() => {
+                    if (div.parentNode) div.remove();
+                }, 12000);
+            }
+        }, 800);
     }
 
     // ================================================================
@@ -1018,7 +1061,7 @@
     }
 
     // ================================================================
-    //  MENSAJES EMERGENTES (carta flotante)
+    //  MENSAJES EMERGENTES
     // ================================================================
     function mostrarMensajeEmergente(texto, x, y) {
         document.querySelectorAll('.mensaje-emergente').forEach(el => el.remove());
@@ -1247,7 +1290,7 @@
         requestAnimationFrame(animar);
         tiempo += 0.01;
 
-        // 1. Corazón con texto: latido y cambio de color
+        // 1. Corazón de partículas: latido y orbitación
         const corazon = particulas[0];
         if (corazon) {
             const pulso = 1 + Math.sin(tiempo * 2.5) * 0.04;
@@ -1261,20 +1304,32 @@
             const color = colores[idx1].clone().lerp(colores[idx2], mix);
             corazon.material.color = color;
             
-            // Las partículas del texto se mantienen en su lugar (no orbitan para que se lea bien)
-            // pero podemos hacer un efecto sutil de "respiración"
+            // Orbitar partículas alrededor del centro
             const positions = corazon.geometria.attributes.position.array;
-            const originales = corazon.posicionesOriginales;
+            const angVel = CONFIG.velocidadOrbita;
             for (let i = 0; i < positions.length; i += 3) {
-                const factor = 1 + Math.sin(tiempo * 1.5 + i) * 0.005;
-                positions[i] = originales[i] * factor;
-                positions[i+1] = originales[i+1] * factor;
-                // z se mantiene igual
+                const x = positions[i];
+                const z = positions[i+2];
+                if (Math.abs(x) > 0.01 || Math.abs(z) > 0.01) {
+                    const dist = Math.sqrt(x*x + z*z);
+                    const ang = Math.atan2(z, x) + angVel * 0.5;
+                    positions[i] = Math.cos(ang) * dist;
+                    positions[i+2] = Math.sin(ang) * dist;
+                }
             }
             corazon.geometria.attributes.position.needsUpdate = true;
         }
 
-        // 2. Frases orbitando
+        // 2. Texto 3D flotante (con latido y brillo)
+        if (texto3D) {
+            const scale = 1 + Math.sin(tiempo * 1.5) * 0.05;
+            texto3D.scale.set(12 * scale, 3 * scale, 1);
+            texto3D.material.opacity = 0.8 + Math.sin(tiempo * 2) * 0.15;
+            // Flotar suavemente
+            texto3D.position.y = 3.8 + Math.sin(tiempo * 0.7) * 0.2;
+        }
+
+        // 3. Frases orbitando
         frasesObjetos.forEach((f) => {
             f.angulo += f.velocidad;
             const x = Math.cos(f.angulo) * f.radio;
@@ -1287,7 +1342,7 @@
             f.elemento.style.opacity = vector.z < 1 ? '1' : '0';
         });
 
-        // 3. Palabras clave
+        // 4. Palabras clave
         palabrasClaveObjetos.forEach((p) => {
             const vector = new THREE.Vector3(p.x, p.y, 0);
             vector.project(camera);
@@ -1297,7 +1352,7 @@
             p.elemento.style.opacity = vector.z < 1 ? '1' : '0';
         });
 
-        // 4. Imágenes orbitando
+        // 5. Imágenes orbitando
         imagenesOrbitando.forEach((img) => {
             img.angulo += img.velocidad;
             const x = Math.cos(img.angulo) * img.radio;
@@ -1310,16 +1365,14 @@
             img.borde.material.opacity = 0.2 + Math.sin(tiempo * 2 + img.angulo) * 0.1;
         });
 
-        // 5. Efecto de viento (partículas se apartan del mouse)
-        if (particulas.length > 0 && particulas[0].posicionesOriginales) {
+        // 6. Efecto de viento (partículas se apartan del mouse)
+        if (particulas.length > 0) {
             const pos = particulas[0].geometria.attributes.position.array;
-            const originales = particulas[0].posicionesOriginales;
             const targetX = mouse.x * 0.3;
             const targetY = mouse.y * 0.3;
             for (let i = 0; i < pos.length; i += 3) {
-                // Volver ligeramente a la posición original
-                pos[i] += (originales[i] + targetX * 0.1 - pos[i]) * 0.02;
-                pos[i+1] += (originales[i+1] + targetY * 0.1 - pos[i+1]) * 0.02;
+                pos[i] += (pos[i] + targetX * 0.05 - pos[i]) * 0.02;
+                pos[i+1] += (pos[i+1] + targetY * 0.05 - pos[i+1]) * 0.02;
             }
             particulas[0].geometria.attributes.position.needsUpdate = true;
         }
