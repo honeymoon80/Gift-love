@@ -358,17 +358,6 @@
             box-shadow: 0 0 30px #ff6b8166;
         }
 
-        /* Texto 3D flotante (mensaje especial) */
-        #texto3DContainer {
-            position: fixed;
-            z-index: 30;
-            pointer-events: none;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-        }
-
         /* Lluvia de corazones y frases (CSS) */
         .lluvia-item {
             position: fixed;
@@ -397,6 +386,69 @@
             }
         }
 
+        /* Mensaje central en el corazón - TEXTO GRANDE Y VISIBLE */
+        #mensajeCentral {
+            position: fixed;
+            z-index: 35;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #fff;
+            pointer-events: none;
+            text-shadow: 
+                0 0 30px #ff6b81,
+                0 0 60px #ff85a2,
+                0 0 90px #ffb6c1,
+                0 0 120px #ff6b81;
+            animation: brilloMensaje 2s ease-in-out infinite alternate;
+            max-width: 90vw;
+            line-height: 1.4;
+        }
+        #mensajeCentral .linea1 {
+            font-size: clamp(1.8rem, 5vw, 3.5rem);
+            font-weight: 700;
+            background: linear-gradient(45deg, #FFB6C1, #FF6B81, #FFD1DC, #FF85A2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+        }
+        #mensajeCentral .linea2 {
+            font-size: clamp(1.4rem, 3.5vw, 2.8rem);
+            font-weight: 600;
+            background: linear-gradient(45deg, #FFD1DC, #FFB6C1, #FF85A2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin-top: 0.2rem;
+        }
+        #mensajeCentral .linea3 {
+            font-size: clamp(1.0rem, 2.5vw, 2.0rem);
+            font-weight: 500;
+            background: linear-gradient(45deg, #FFB6C1, #FFDAB9, #FF85A2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin-top: 0.2rem;
+        }
+        #mensajeCentral .linea4 {
+            font-size: clamp(1.8rem, 4vw, 3.0rem);
+            font-weight: 700;
+            background: linear-gradient(45deg, #FF6B81, #FF85A2, #FFB6C1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            margin-top: 0.3rem;
+        }
+        @keyframes brilloMensaje {
+            0% { text-shadow: 0 0 30px #ff6b81, 0 0 60px #ff85a2, 0 0 90px #ffb6c1; }
+            100% { text-shadow: 0 0 50px #ff6b81, 0 0 90px #ff85a2, 0 0 130px #ffb6c1, 0 0 180px #ff6b81; }
+        }
+
         /* Responsive */
         @media (max-width: 600px) {
             #musicPlayer { bottom: 12px; right: 12px; padding: 6px 10px; min-width: 150px; gap: 6px; }
@@ -406,6 +458,10 @@
             .volumen-slider input[type="range"] { width: 30px; }
             .mensaje-emergente { max-width: 260px; padding: 20px; font-size: 0.9rem; }
             #btnAbrir { font-size: 1.2rem; padding: 0.8rem 1.8rem; }
+            #mensajeCentral .linea1 { font-size: clamp(1.2rem, 4vw, 2rem); }
+            #mensajeCentral .linea2 { font-size: clamp(1rem, 3vw, 1.6rem); }
+            #mensajeCentral .linea3 { font-size: clamp(0.8rem, 2vw, 1.2rem); }
+            #mensajeCentral .linea4 { font-size: clamp(1.2rem, 3.5vw, 1.8rem); }
         }
     </style>
 </head>
@@ -438,8 +494,13 @@
 <!-- CANVAS DE THREE.JS -->
 <div id="galaxyCanvas"></div>
 
-<!-- CONTENEDOR PARA TEXTO 3D -->
-<div id="texto3DContainer"></div>
+<!-- MENSAJE CENTRAL EN EL CORAZÓN (TEXTO GRANDE Y VISIBLE) -->
+<div id="mensajeCentral">
+    <span class="linea1">♥︎ Te AMO mushísimo ♥︎</span>
+    <span class="linea2">mi bella niñita siempre PERFECTA</span>
+    <span class="linea3">de todito mi korashon</span>
+    <span class="linea4">HEHE (≧▽≦)/ ♥︎</span>
+</div>
 
 <!-- REPRODUCTOR DE MÚSICA -->
 <div id="musicPlayer">
@@ -494,7 +555,6 @@
         velocidadOrbita: 0.002,
         cantidadParticulas: 3500,
         duracionCarga: 2.5,
-        textoEspecial: "♥︎ Te AMO mushísimo mi bella niñita siempre PERFECTA de todito mi korashon HEHE(≧▽≦)/ ♥︎",
         frasesLluvia: [
             "Te amo May 💖",
             "Eres mi sol ✨",
@@ -522,7 +582,6 @@
     let cancionesLista = [];
     let imagenTextures = [];
     let lluviaActiva = true;
-    let texto3D = null;
 
     // ================================================================
     //  FUNCIONES DE INICIO Y CARGA
@@ -618,6 +677,9 @@
     //  INICIALIZAR GALAXIA
     // ================================================================
     function iniciarGalaxia() {
+        // Mostrar el mensaje central
+        document.getElementById('mensajeCentral').style.display = 'block';
+
         const container = document.getElementById('galaxyCanvas');
         container.classList.add('active');
 
@@ -636,7 +698,6 @@
 
         cargarTexturas();
         crearCorazonParticulas();
-        crearTexto3D();
         crearFrases();
         crearPalabrasClave();
         crearImagenes();
@@ -684,7 +745,7 @@
             size: 0.08,
             vertexColors: true,
             transparent: true,
-            opacity: 0.95,
+            opacity: 0.85,
             blending: THREE.AdditiveBlending,
             depthWrite: false,
             sizeAttenuation: true
@@ -702,78 +763,6 @@
             velocidadOrbita: CONFIG.velocidadOrbita,
             posicionesOriginales: posiciones.slice()
         });
-    }
-
-    // ================================================================
-    //  TEXTO 3D FLOTANTE (mensaje especial)
-    // ================================================================
-    function crearTexto3D() {
-        // Usamos un sprite con canvas para simular texto 3D
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = 1024;
-        canvas.height = 256;
-
-        // Fondo transparente con glow
-        const grad = ctx.createLinearGradient(0, 0, canvas.width, 0);
-        grad.addColorStop(0, 'rgba(255, 182, 193, 0)');
-        grad.addColorStop(0.1, 'rgba(255, 182, 193, 0.1)');
-        grad.addColorStop(0.5, 'rgba(255, 182, 193, 0.2)');
-        grad.addColorStop(0.9, 'rgba(255, 182, 193, 0.1)');
-        grad.addColorStop(1, 'rgba(255, 182, 193, 0)');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Texto con sombra y brillo
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        
-        // Sombra glow
-        ctx.shadowColor = '#ff6b81';
-        ctx.shadowBlur = 40;
-        
-        // Texto principal
-        const texto = CONFIG.textoEspecial;
-        const fontSize = Math.min(38, 900 / texto.length * 2);
-        ctx.font = `bold ${fontSize}px 'Segoe UI', Arial, sans-serif`;
-        
-        // Gradiente para el texto
-        const gradText = ctx.createLinearGradient(0, 0, canvas.width, 0);
-        const colores = CONFIG.colores;
-        gradText.addColorStop(0, colores[0]);
-        gradText.addColorStop(0.25, colores[1]);
-        gradText.addColorStop(0.5, colores[2]);
-        gradText.addColorStop(0.75, colores[3]);
-        gradText.addColorStop(1, colores[4]);
-        ctx.fillStyle = gradText;
-        ctx.shadowColor = '#ff6b81';
-        ctx.shadowBlur = 30;
-        ctx.fillText(texto, canvas.width/2, canvas.height/2);
-
-        // Brillo extra
-        ctx.shadowBlur = 60;
-        ctx.shadowColor = '#ff85a2';
-        ctx.globalAlpha = 0.3;
-        ctx.fillText(texto, canvas.width/2, canvas.height/2);
-        ctx.globalAlpha = 1;
-
-        const texture = new THREE.CanvasTexture(canvas);
-        texture.needsUpdate = true;
-
-        const material = new THREE.SpriteMaterial({
-            map: texture,
-            transparent: true,
-            blending: THREE.AdditiveBlending,
-            depthWrite: false,
-            opacity: 0.9
-        });
-
-        const sprite = new THREE.Sprite(material);
-        sprite.scale.set(12, 3, 1);
-        sprite.position.set(0, 3.8, 0);
-        sprite.name = 'texto3D';
-        scene.add(sprite);
-        texto3D = sprite;
     }
 
     // ================================================================
@@ -1243,7 +1232,8 @@
     function onGalaxyClick(event) {
         const target = event.target;
         if (target.closest('#musicPlayer') || target.closest('.mensaje-emergente') || 
-            target.closest('.palabra-clave') || target.closest('.frase-flotante')) {
+            target.closest('.palabra-clave') || target.closest('.frase-flotante') ||
+            target.closest('#mensajeCentral')) {
             return;
         }
 
@@ -1320,16 +1310,7 @@
             corazon.geometria.attributes.position.needsUpdate = true;
         }
 
-        // 2. Texto 3D flotante (con latido y brillo)
-        if (texto3D) {
-            const scale = 1 + Math.sin(tiempo * 1.5) * 0.05;
-            texto3D.scale.set(12 * scale, 3 * scale, 1);
-            texto3D.material.opacity = 0.8 + Math.sin(tiempo * 2) * 0.15;
-            // Flotar suavemente
-            texto3D.position.y = 3.8 + Math.sin(tiempo * 0.7) * 0.2;
-        }
-
-        // 3. Frases orbitando
+        // 2. Frases orbitando
         frasesObjetos.forEach((f) => {
             f.angulo += f.velocidad;
             const x = Math.cos(f.angulo) * f.radio;
@@ -1342,7 +1323,7 @@
             f.elemento.style.opacity = vector.z < 1 ? '1' : '0';
         });
 
-        // 4. Palabras clave
+        // 3. Palabras clave
         palabrasClaveObjetos.forEach((p) => {
             const vector = new THREE.Vector3(p.x, p.y, 0);
             vector.project(camera);
@@ -1352,7 +1333,7 @@
             p.elemento.style.opacity = vector.z < 1 ? '1' : '0';
         });
 
-        // 5. Imágenes orbitando
+        // 4. Imágenes orbitando
         imagenesOrbitando.forEach((img) => {
             img.angulo += img.velocidad;
             const x = Math.cos(img.angulo) * img.radio;
@@ -1365,7 +1346,7 @@
             img.borde.material.opacity = 0.2 + Math.sin(tiempo * 2 + img.angulo) * 0.1;
         });
 
-        // 6. Efecto de viento (partículas se apartan del mouse)
+        // 5. Efecto de viento (partículas se apartan del mouse)
         if (particulas.length > 0) {
             const pos = particulas[0].geometria.attributes.position.array;
             const targetX = mouse.x * 0.3;
