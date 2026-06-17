@@ -4,8 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <title>Para May - Galaxia de Amor</title>
+    <!-- Three.js CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
+        /* --- ESTILOS GLOBALES --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
@@ -15,6 +17,7 @@
             height: 100vh;
             user-select: none;
         }
+        /* Pantalla de apertura */
         #splash {
             position: fixed;
             inset: 0;
@@ -55,6 +58,7 @@
             box-shadow: 0 0 30px #ff8da1aa, 0 0 60px #ff6b81aa;
             transition: 0.3s;
             animation: latidoBoton 1.8s infinite ease-in-out;
+            position: relative;
         }
         #btnAbrir:hover { transform: scale(1.05); background: #ff6b81; }
         @keyframes latidoBoton {
@@ -63,6 +67,7 @@
             100% { box-shadow: 0 0 20px #ff8da1aa; transform: scale(1); }
         }
 
+        /* --- MENÚ DE CARGA --- */
         #loadingScreen {
             position: fixed;
             inset: 0;
@@ -106,6 +111,7 @@
             height: 100px;
             position: relative;
             cursor: pointer;
+            transition: 0.2s;
         }
         #heartLoader canvas {
             width: 100%;
@@ -155,6 +161,7 @@
             font-weight: 300;
         }
 
+        /* --- FASE 2: GALAXIA --- */
         #galaxyCanvas {
             position: fixed;
             inset: 0;
@@ -163,6 +170,7 @@
         }
         #galaxyCanvas.active { display: block; }
 
+        /* Reproductor de música */
         #musicPlayer {
             position: fixed;
             bottom: 25px;
@@ -292,6 +300,7 @@
         }
         .lista-canciones button:hover { background: #ffb6c122; color: #fff; }
 
+        /* Mensajes emergentes */
         .mensaje-emergente {
             position: fixed;
             z-index: 200;
@@ -307,6 +316,7 @@
             line-height: 1.6;
             animation: aparecerCarta 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             pointer-events: auto;
+            transition: opacity 0.4s;
         }
         @keyframes aparecerCarta {
             from { opacity: 0; transform: scale(0.7) translateY(20px); }
@@ -323,6 +333,7 @@
             cursor: pointer;
         }
 
+        /* Palabras clave */
         .palabra-clave {
             position: fixed;
             z-index: 50;
@@ -347,6 +358,35 @@
             box-shadow: 0 0 30px #ff6b8166;
         }
 
+        /* Lluvia de corazones y frases (CSS) */
+        .lluvia-item {
+            position: fixed;
+            z-index: 20;
+            pointer-events: none;
+            font-size: 1.5rem;
+            animation: caerLluvia linear forwards;
+            opacity: 0.9;
+            text-shadow: 0 0 20px rgba(255, 107, 129, 0.5);
+        }
+        @keyframes caerLluvia {
+            0% {
+                transform: translateY(-100px) rotate(0deg) scale(0.5);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.9;
+                transform: translateY(0px) rotate(10deg) scale(1);
+            }
+            90% {
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(110vh) rotate(720deg) scale(0.3);
+                opacity: 0;
+            }
+        }
+
+        /* Mensaje central en el corazón - TEXTO GRANDE Y VISIBLE */
         #mensajeCentral {
             position: fixed;
             z-index: 35;
@@ -409,6 +449,7 @@
             100% { text-shadow: 0 0 50px #ff6b81, 0 0 90px #ff85a2, 0 0 130px #ffb6c1, 0 0 180px #ff6b81; }
         }
 
+        /* Responsive */
         @media (max-width: 600px) {
             #musicPlayer { bottom: 12px; right: 12px; padding: 6px 10px; min-width: 150px; gap: 6px; }
             .player-btn { font-size: 1.2rem; width: 30px; height: 30px; }
@@ -426,11 +467,13 @@
 </head>
 <body>
 
+<!-- PANTALLA DE APERTURA -->
 <div id="splash">
     <h1 id="tituloSplash">Para May, con todo mi amor</h1>
     <button id="btnAbrir">❤️ Abrir regalo</button>
 </div>
 
+<!-- MENÚ DE CARGA -->
 <div id="loadingScreen">
     <div class="stars"></div>
     <div class="loader-content">
@@ -448,8 +491,10 @@
     </div>
 </div>
 
+<!-- CANVAS DE THREE.JS -->
 <div id="galaxyCanvas"></div>
 
+<!-- MENSAJE CENTRAL EN EL CORAZÓN (TEXTO GRANDE Y VISIBLE) -->
 <div id="mensajeCentral">
     <span class="linea1">♥︎ Te AMO mushísimo ♥︎</span>
     <span class="linea2">mi bella niñita siempre PERFECTA</span>
@@ -457,6 +502,7 @@
     <span class="linea4">HEHE (≧▽≦)/ ♥︎</span>
 </div>
 
+<!-- REPRODUCTOR DE MÚSICA -->
 <div id="musicPlayer">
     <button class="toggle-min" id="toggleMinimizar">◀</button>
     <span class="info-cancion" id="nombreCancion">🎵 Sin canción</span>
@@ -478,7 +524,7 @@
 
 <script>
     // ================================================================
-    //  CONFIGURACIÓN CENTRALIZADA (ULTRA OPTIMIZADA)
+    //  CONFIGURACIÓN CENTRALIZADA
     // ================================================================
     const CONFIG = {
         nombre: "May",
@@ -507,15 +553,25 @@
         canciones: ["cancion1.mp3", "cancion2.mp3", "cancion3.mp3"],
         imagenes: ["foto1.jpg", "foto2.jpg", "foto3.jpg", "foto4.jpg"],
         velocidadOrbita: 0.002,
-        cantidadParticulas: 3500, // Restaurado a cantidad original
-        duracionCarga: 2.5
+        cantidadParticulas: 3500,
+        duracionCarga: 2.5,
+        frasesLluvia: [
+            "Te amo May 💖",
+            "Eres mi sol ✨",
+            "Siempre tú 🌸",
+            "Mi alma 💫",
+            "Eres perfecta 🌹",
+            "Te adoro ❤️",
+            "Eres mi vida 💕",
+            "Mi razón de ser 🌺"
+        ]
     };
 
     // ================================================================
     //  VARIABLES GLOBALES
     // ================================================================
     let scene, camera, renderer;
-    let corazonParticulas = null;
+    let particulas = [];
     let frasesObjetos = [];
     let palabrasClaveObjetos = [];
     let imagenesOrbitando = [];
@@ -525,6 +581,7 @@
     let isPlaying = false;
     let cancionesLista = [];
     let imagenTextures = [];
+    let lluviaActiva = true;
 
     // ================================================================
     //  FUNCIONES DE INICIO Y CARGA
@@ -535,6 +592,7 @@
             mostrarCarga();
         });
         configurarReproductor();
+        configurarPalabrasClave();
     }
 
     function mostrarCarga() {
@@ -584,6 +642,7 @@
             const elapsed = ahora - inicio;
             let prog = Math.min(elapsed / duracion, 1);
             if (acelerado) prog = Math.min(prog + 0.03, 1);
+            progreso = prog;
 
             const circle = document.getElementById('progressCircleFill');
             const offset = 380 - (380 * prog);
@@ -615,9 +674,10 @@
     }
 
     // ================================================================
-    //  INICIALIZAR GALAXIA (ULTRA OPTIMIZADA)
+    //  INICIALIZAR GALAXIA
     // ================================================================
     function iniciarGalaxia() {
+        // Mostrar el mensaje central
         document.getElementById('mensajeCentral').style.display = 'block';
 
         const container = document.getElementById('galaxyCanvas');
@@ -640,7 +700,9 @@
         crearCorazonParticulas();
         crearFrases();
         crearPalabrasClave();
+        crearImagenes();
         efectoNacimiento();
+        iniciarLluvia();
 
         window.addEventListener('resize', onResize);
         window.addEventListener('mousemove', onMouseMove);
@@ -650,7 +712,7 @@
     }
 
     // ================================================================
-    //  CORAZÓN DE PARTÍCULAS (OPTIMIZADO - SIN EFECTO VIENTO)
+    //  CORAZÓN DE PARTÍCULAS (el original que gira)
     // ================================================================
     function crearCorazonParticulas() {
         const geometria = new THREE.BufferGeometry();
@@ -683,7 +745,7 @@
             size: 0.08,
             vertexColors: true,
             transparent: true,
-            opacity: 0.9,
+            opacity: 0.85,
             blending: THREE.AdditiveBlending,
             depthWrite: false,
             sizeAttenuation: true
@@ -693,12 +755,14 @@
         puntos.name = 'corazonCentral';
         scene.add(puntos);
 
-        corazonParticulas = {
+        particulas.push({
             mesh: puntos,
             geometria: geometria,
             material: material,
-            velocidadOrbita: CONFIG.velocidadOrbita
-        };
+            escala: 1,
+            velocidadOrbita: CONFIG.velocidadOrbita,
+            posicionesOriginales: posiciones.slice()
+        });
     }
 
     // ================================================================
@@ -739,7 +803,8 @@
                 elemento: div,
                 angulo: angulo,
                 radio: radio,
-                velocidad: 0.003 + Math.random() * 0.002
+                velocidad: 0.003 + Math.random() * 0.002,
+                texto: texto
             });
         });
     }
@@ -747,6 +812,10 @@
     // ================================================================
     //  PALABRAS CLAVE
     // ================================================================
+    function configurarPalabrasClave() {
+        // Solo creamos las palabras clave en la fase 2
+    }
+
     function crearPalabrasClave() {
         const palabras = Object.keys(CONFIG.palabrasClave);
         const posiciones = [
@@ -782,20 +851,17 @@
     }
 
     // ================================================================
-    //  IMÁGENES ORBITANDO (Carga diferida)
+    //  IMÁGENES ORBITANDO
     // ================================================================
     function cargarTexturas() {
         const imagenes = CONFIG.imagenes;
         const loader = new THREE.TextureLoader();
-        let cargadas = 0;
-        
         imagenes.forEach((img) => {
             loader.load(
                 'img/' + img,
                 (texture) => {
                     imagenTextures.push(texture);
-                    cargadas++;
-                    if (cargadas === imagenes.length) {
+                    if (imagenTextures.length === imagenes.length) {
                         crearImagenes();
                     }
                 },
@@ -813,10 +879,6 @@
                     ctx.fillText('💖', 64, 64);
                     const tex = new THREE.CanvasTexture(canvas);
                     imagenTextures.push(tex);
-                    cargadas++;
-                    if (cargadas === imagenes.length) {
-                        crearImagenes();
-                    }
                 }
             );
         });
@@ -887,10 +949,45 @@
     }
 
     // ================================================================
-    //  EFECTO NACIMIENTO DE ESTRELLAS (OPTIMIZADO)
+    //  LLUVIA DE CORAZONES Y FRASES ROMÁNTICAS
+    // ================================================================
+    function iniciarLluvia() {
+        const emojis = ['❤️', '💖', '💕', '💗', '💝', '✨', '🌸', '🌹', '💫', '🌺'];
+        const frases = CONFIG.frasesLluvia;
+        
+        setInterval(() => {
+            if (!lluviaActiva) return;
+            
+            const cantidad = 2 + Math.floor(Math.random() * 3);
+            for (let i = 0; i < cantidad; i++) {
+                const esFrase = Math.random() > 0.5;
+                const contenido = esFrase ? 
+                    frases[Math.floor(Math.random() * frases.length)] : 
+                    emojis[Math.floor(Math.random() * emojis.length)];
+                
+                const div = document.createElement('div');
+                div.className = 'lluvia-item';
+                div.textContent = contenido;
+                div.style.left = (Math.random() * 90 + 5) + '%';
+                div.style.fontSize = (1.2 + Math.random() * 1.5) + 'rem';
+                div.style.animationDuration = (6 + Math.random() * 6) + 's';
+                div.style.color = CONFIG.colores[Math.floor(Math.random() * CONFIG.colores.length)];
+                div.style.textShadow = `0 0 30px ${CONFIG.colores[Math.floor(Math.random() * CONFIG.colores.length)]}`;
+                
+                document.body.appendChild(div);
+                
+                setTimeout(() => {
+                    if (div.parentNode) div.remove();
+                }, 12000);
+            }
+        }, 800);
+    }
+
+    // ================================================================
+    //  EFECTO NACIMIENTO DE ESTRELLAS
     // ================================================================
     function efectoNacimiento() {
-        const count = 200;
+        const count = 500;
         const geometria = new THREE.BufferGeometry();
         const pos = new Float32Array(count * 3);
         const col = new Float32Array(count * 3);
@@ -920,7 +1017,7 @@
         scene.add(puntos);
 
         let startTime = Date.now();
-        const duracion = 1500;
+        const duracion = 2000;
 
         function expandir() {
             const elapsed = Date.now() - startTime;
@@ -1135,13 +1232,14 @@
     function onGalaxyClick(event) {
         const target = event.target;
         if (target.closest('#musicPlayer') || target.closest('.mensaje-emergente') || 
-            target.closest('.palabra-clave') || target.closest('#mensajeCentral')) {
+            target.closest('.palabra-clave') || target.closest('.frase-flotante') ||
+            target.closest('#mensajeCentral')) {
             return;
         }
 
         const emojis = ['💖', '✨', '🌸', '🌹', '💫', '🌺', '❤️‍🔥', '💕'];
         const frases = ['Te amo May', 'Eres mi sol', 'Siempre tú', 'Mi alma', 'Eres perfecta'];
-        const count = 20 + Math.floor(Math.random() * 10);
+        const count = 30 + Math.floor(Math.random() * 20);
 
         for (let i = 0; i < count; i++) {
             const emoji = emojis[Math.floor(Math.random() * emojis.length)];
@@ -1176,16 +1274,17 @@
     }
 
     // ================================================================
-    //  ANIMACIÓN PRINCIPAL (ULTRA OPTIMIZADA - SIN EFECTO VIENTO)
+    //  ANIMACIÓN PRINCIPAL
     // ================================================================
     function animar() {
         requestAnimationFrame(animar);
         tiempo += 0.01;
 
-        // 1. Corazón de partículas: latido y orbitación (SOLO ESTO)
-        if (corazonParticulas) {
+        // 1. Corazón de partículas: latido y orbitación
+        const corazon = particulas[0];
+        if (corazon) {
             const pulso = 1 + Math.sin(tiempo * 2.5) * 0.04;
-            corazonParticulas.mesh.scale.set(pulso, pulso, pulso);
+            corazon.mesh.scale.set(pulso, pulso, pulso);
             
             // Cambio de color gradual
             const colores = CONFIG.colores.map(c => new THREE.Color(c));
@@ -1193,10 +1292,10 @@
             const idx2 = (idx1 + 1) % colores.length;
             const mix = (tiempo * 0.2) % 1;
             const color = colores[idx1].clone().lerp(colores[idx2], mix);
-            corazonParticulas.material.color = color;
+            corazon.material.color = color;
             
-            // Orbitar partículas (esto es rápido porque solo actualiza posiciones)
-            const positions = corazonParticulas.geometria.attributes.position.array;
+            // Orbitar partículas alrededor del centro
+            const positions = corazon.geometria.attributes.position.array;
             const angVel = CONFIG.velocidadOrbita;
             for (let i = 0; i < positions.length; i += 3) {
                 const x = positions[i];
@@ -1208,10 +1307,10 @@
                     positions[i+2] = Math.sin(ang) * dist;
                 }
             }
-            corazonParticulas.geometria.attributes.position.needsUpdate = true;
+            corazon.geometria.attributes.position.needsUpdate = true;
         }
 
-        // 2. Frases orbitando (solo actualiza posiciones CSS)
+        // 2. Frases orbitando
         frasesObjetos.forEach((f) => {
             f.angulo += f.velocidad;
             const x = Math.cos(f.angulo) * f.radio;
@@ -1247,8 +1346,17 @@
             img.borde.material.opacity = 0.2 + Math.sin(tiempo * 2 + img.angulo) * 0.1;
         });
 
-        // 5. EFECTO VIENTO ELIMINADO - ¡Adiós lag!
-        // Ahora las partículas solo orbitan y laten, sin calcular desplazamientos por mouse
+        // 5. Efecto de viento (partículas se apartan del mouse)
+        if (particulas.length > 0) {
+            const pos = particulas[0].geometria.attributes.position.array;
+            const targetX = mouse.x * 0.3;
+            const targetY = mouse.y * 0.3;
+            for (let i = 0; i < pos.length; i += 3) {
+                pos[i] += (pos[i] + targetX * 0.05 - pos[i]) * 0.02;
+                pos[i+1] += (pos[i+1] + targetY * 0.05 - pos[i+1]) * 0.02;
+            }
+            particulas[0].geometria.attributes.position.needsUpdate = true;
+        }
 
         renderer.render(scene, camera);
     }
