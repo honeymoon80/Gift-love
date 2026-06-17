@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { margin: 0; background: radial-gradient(circle, #1a0a1a, #000000); color: #fff; font-family: sans-serif; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .contenedor { z-index: 10; text-align: center; padding: 40px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; }
+        #play-btn { cursor: pointer; background: #ff4d6d; border: none; padding: 10px 20px; border-radius: 20px; color: white; font-weight: bold; margin-top: 20px; }
+        .corazon { position: absolute; top: -10%; color: #ff4d6d; font-size: 24px; animation: caer 6s linear infinite; }
+        @keyframes caer { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
+    </style>
+</head>
+<body>
+    <div class="contenedor">
+        <h1>Para mi amada May</h1>
+        <p>Cada momento contigo es mi tesoro más grande.</p>
+        <button id="play-btn" onclick="playMusic()">Reproducir nuestra canción</button>
+        <audio id="bg-music" loop>
+            <source src="assets/musica.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <script>
+        function playMusic() {
+            var audio = document.getElementById("bg-music");
+            audio.play();
+            document.getElementById("play-btn").style.display = "none";
+        }
+
+        function crearCorazon() {
+            const c = document.createElement('div');
+            c.innerHTML = '❤';
+            c.className = 'corazon';
+            c.style.left = Math.random() * 100 + 'vw';
+            c.style.animationDuration = Math.random() * 3 + 4 + 's';
+            document.body.appendChild(c);
+            setTimeout(() => c.remove(), 7000);
+        }
+        setInterval(crearCorazon, 400);
+    </script>
+</body>
+</html>
