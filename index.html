@@ -371,9 +371,6 @@
         }
         .lista-canciones button:hover { background: #ffb6c122; color: #fff; }
 
-        /* ================================================================
-           MENSAJE EMERGENTE CON IMAGEN POLAROID (solo aparece al hacer clic)
-           ================================================================ */
         .mensaje-emergente {
             position: fixed;
             z-index: 200;
@@ -470,7 +467,6 @@
             line-height: 1.6;
             text-align: center;
         }
-        /* IMAGEN POLAROID - SOLO APARECE DENTRO DEL MENSAJE */
         .mensaje-emergente .polaroid {
             width: 120px;
             height: 120px;
@@ -611,8 +607,6 @@
 <script>
     // ================================================================
     //  CONFIGURACIÓN CENTRALIZADA
-    //  - 28 IMÁGENES FLOTANDO (transparentes)
-    //  - IMÁGENES PARA MENSAJES (polaroid, solo al hacer clic)
     // ================================================================
     const CONFIG = {
         nombre: "May",
@@ -629,7 +623,7 @@
         mensajesLargos: {
             "Eres mi universo, May": {
                 texto: "May, desde que llegaste a mi vida, cada estrella brilla con tu nombre. Eres el centro de todo mi cosmos, mi sol, mi luna y todas mis estrellas. 🌟💖",
-                img: "msg_foto1.webp"  // ⭐ IMAGEN POLAROID (solo en el mensaje)
+                img: "msg_foto1.webp"
             },
             "Cada latido es por ti": {
                 texto: "Cada latido de mi corazón tiene tu nombre, May. Late por ti, late para ti, late contigo. Eres mi ritmo, mi melodía, mi canción de amor eterna. 🎵❤️",
@@ -685,37 +679,16 @@
         colores: ["#FFB6C1", "#FF6B81", "#FFD1DC", "#FFDAB9", "#FF85A2"],
         canciones: ["cancion1.mp3", "cancion2.mp3", "cancion3.mp3", "cancion4.mp3"],
         
-        // ⭐ 28 IMÁGENES FLOTANDO (transparentes) ⭐
+        // ⭐ 28 IMÁGENES FLOTANDO ⭐
         imagenesFlotando: [
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto1.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto2.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto3.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto4.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto5.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto6.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto7.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto8.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto9.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto10.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto11.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto12.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto13.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto14.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto15.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto16.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto17.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto18.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto19.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto20.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto21.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto22.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto23.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto24.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto25.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto26.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto27.webp",
-    "https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/foto28.webp"
-],
+            "foto1.webp", "foto2.webp", "foto3.webp", "foto4.webp",
+            "foto5.webp", "foto6.webp", "foto7.webp", "foto8.webp",
+            "foto9.webp", "foto10.webp", "foto11.webp", "foto12.webp",
+            "foto13.webp", "foto14.webp", "foto15.webp", "foto16.webp",
+            "foto17.webp", "foto18.webp", "foto19.webp", "foto20.webp",
+            "foto21.webp", "foto22.webp", "foto23.webp", "foto24.webp",
+            "foto25.webp", "foto26.webp", "foto27.webp", "foto28.webp"
+        ],
         
         velocidadOrbita: 0.0015,
         cantidadParticulas: 3000,
@@ -1019,48 +992,53 @@
     }
 
     // ================================================================
-    //  IMÁGENES FLOTANDO - 28 IMÁGENES (TRANSPARENTES)
+    //  IMÁGENES FLOTANDO - CON RUTA DE GITHUB PAGES
     // ================================================================
     function cargarTexturasFlotando() {
-    const imagenes = CONFIG.imagenesFlotando;
-    const loader = new THREE.TextureLoader();
-    let cargadas = 0;
-    
-    imagenes.forEach((ruta) => {
-        console.log('Cargando:', ruta);
+        const imagenes = CONFIG.imagenesFlotando;
+        const loader = new THREE.TextureLoader();
+        let cargadas = 0;
         
-        loader.load(
-            ruta,
-            (texture) => {
-                console.log('✅ Cargada:', ruta);
-                imagenTextures.push(texture);
-                cargadas++;
-                if (cargadas === imagenes.length) {
-                    crearImagenesFlotando();
+        // ⭐ RUTA CORRECTA DE GITHUB PAGES ⭐
+        const baseURL = 'https://honeymoon80.github.io/Gift-love/img/';
+        
+        imagenes.forEach((img) => {
+            const ruta = baseURL + img;
+            console.log('Cargando:', ruta);
+            
+            loader.load(
+                ruta,
+                (texture) => {
+                    console.log('✅ Cargada:', ruta);
+                    imagenTextures.push(texture);
+                    cargadas++;
+                    if (cargadas === imagenes.length) {
+                        crearImagenesFlotando();
+                    }
+                },
+                undefined,
+                (error) => {
+                    console.error('❌ Error:', ruta);
+                    // Placeholder
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 128; canvas.height = 128;
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#ff6b81';
+                    ctx.fillRect(0, 0, 128, 128);
+                    ctx.fillStyle = '#fff';
+                    ctx.font = '40px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('📸', 64, 64);
+                    const tex = new THREE.CanvasTexture(canvas);
+                    imagenTextures.push(tex);
+                    cargadas++;
+                    if (cargadas === imagenes.length) {
+                        crearImagenesFlotando();
+                    }
                 }
-            },
-            undefined,
-            (error) => {
-                console.error('❌ Error:', ruta);
-                const canvas = document.createElement('canvas');
-                canvas.width = 128; canvas.height = 128;
-                const ctx = canvas.getContext('2d');
-                ctx.fillStyle = '#ff6b81';
-                ctx.fillRect(0, 0, 128, 128);
-                ctx.fillStyle = '#fff';
-                ctx.font = '40px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText('📸', 64, 64);
-                const tex = new THREE.CanvasTexture(canvas);
-                imagenTextures.push(tex);
-                cargadas++;
-                if (cargadas === imagenes.length) {
-                    crearImagenesFlotando();
-                }
-            }
-        );
-    });
+            );
+        });
     }
 
     function crearImagenesFlotando() {
@@ -1071,10 +1049,10 @@
             ctx.fillStyle = '#ffb6c1';
             ctx.fillRect(0, 0, 128, 128);
             ctx.fillStyle = '#fff';
-            ctx.font = '30px sans-serif';
+            ctx.font = '40px sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('📸', 64, 64);
+            ctx.fillText('💖', 64, 64);
             const tex = new THREE.CanvasTexture(canvas);
             imagenTextures = Array(28).fill(tex);
         }
@@ -1089,7 +1067,7 @@
             else if (anillo === 1) radio = 5.0 + Math.random() * 0.6;
             else radio = 6.2 + Math.random() * 0.6;
             radios.push(radio);
-            sizes.push(0.6 + Math.random() * 0.5);
+            sizes.push(1.0 + Math.random() * 0.6);
         }
         
         CONFIG.imagenesFlotando.forEach((_, idx) => {
@@ -1100,7 +1078,7 @@
                 map: tex,
                 transparent: true,
                 side: THREE.DoubleSide,
-                opacity: 0.35  // ⭐ TRANSPARENCIA 35%
+                opacity: 0.85
             });
             const mesh = new THREE.Mesh(geometria, material);
             const angulo = (idx / CONFIG.imagenesFlotando.length) * Math.PI * 2 + Math.random() * 0.2;
@@ -1119,12 +1097,12 @@
             
             scene.add(mesh);
 
-            const bordeSize = size + 0.08;
+            const bordeSize = size + 0.12;
             const bordeGeo = new THREE.PlaneGeometry(bordeSize, bordeSize);
             const bordeMat = new THREE.MeshBasicMaterial({
                 color: 0xff8da1,
                 transparent: true,
-                opacity: 0.12,  // ⭐ BORDE TRANSPARENTE
+                opacity: 0.4,
                 side: THREE.DoubleSide
             });
             const borde = new THREE.Mesh(bordeGeo, bordeMat);
@@ -1254,23 +1232,19 @@
         const div = document.createElement('div');
         div.className = 'mensaje-emergente';
         
-        // Título
         const tituloSpan = document.createElement('span');
         tituloSpan.className = 'titulo-msg';
         tituloSpan.textContent = '💕 ' + titulo + ' 💕';
         div.appendChild(tituloSpan);
         
-        // Contenedor del contenido
         const contenido = document.createElement('div');
         contenido.className = 'contenido-msg';
         
-        // Texto
         const textoSpan = document.createElement('div');
         textoSpan.className = 'texto-msg';
         textoSpan.textContent = texto;
         contenido.appendChild(textoSpan);
         
-        // Imagen polaroid (solo si existe)
         if (imgPath) {
             const polaroidContainer = document.createElement('div');
             polaroidContainer.className = 'polaroid-container';
@@ -1291,20 +1265,17 @@
         
         div.appendChild(contenido);
         
-        // Decoración
         const decoracion = document.createElement('div');
         decoracion.className = 'decoracion';
         decoracion.textContent = '🌸 ✨ 💖 ✨ 🌸';
         div.appendChild(decoracion);
         
-        // Botón cerrar
         const cerrar = document.createElement('button');
         cerrar.className = 'cerrar';
         cerrar.textContent = '✕';
         cerrar.addEventListener('click', () => div.remove());
         div.appendChild(cerrar);
 
-        // Posicionar
         div.style.left = Math.min(x + 20, window.innerWidth - 460) + 'px';
         div.style.top = Math.min(y - 80, window.innerHeight - 320) + 'px';
         if (x + 460 > window.innerWidth) {
