@@ -163,7 +163,6 @@
         }
         #galaxyCanvas.active { display: block; }
 
-        /* MENSAJE CENTRAL - HTML PURO (SIN LAG) */
         #mensajeCentral {
             position: fixed;
             z-index: 35;
@@ -216,7 +215,6 @@
             100% { filter: brightness(1.2) drop-shadow(0 0 40px #ff85a2); }
         }
 
-        /* LLUVIA DE CORAZONES Y FRASES */
         .lluvia-item {
             position: fixed;
             z-index: 20;
@@ -373,7 +371,6 @@
         }
         .lista-canciones button:hover { background: #ffb6c122; color: #fff; }
 
-        /* MENSAJE EMERGENTE - ESTILO CUTE PASTEL 💖 */
         .mensaje-emergente {
             position: fixed;
             z-index: 200;
@@ -605,9 +602,7 @@
             "Aventura": "Cada día a tu lado es una nueva aventura llena de magia, descubrimientos y amor incondicional. Contigo, la vida es una hermosa travesía. 🗺️❤️"
         },
         colores: ["#FFB6C1", "#FF6B81", "#FFD1DC", "#FFDAB9", "#FF85A2"],
-        // 4 CANCIONES
         canciones: ["cancion1.mp3", "cancion2.mp3", "cancion3.mp3", "cancion4.mp3"],
-        // 8 IMÁGENES EN WEBP
         imagenes: ["foto1.webp", "foto2.webp", "foto3.webp", "foto4.webp", "foto5.webp", "foto6.webp", "foto7.webp", "foto8.webp"],
         velocidadOrbita: 0.002,
         cantidadParticulas: 3500,
@@ -903,7 +898,7 @@
     }
 
     // ================================================================
-    //  IMÁGENES ORBITANDO (8 IMÁGENES EN WEBP)
+    //  IMÁGENES ORBITANDO (8 IMÁGENES - CORREGIDAS PARA QUE SE VEAN BIEN)
     // ================================================================
     function cargarTexturas() {
         const imagenes = CONFIG.imagenes;
@@ -985,8 +980,14 @@
                 radio: radio,
                 velocidad: 0.002 + Math.random() * 0.002
             };
+            
+            // ⭐ CORRECCIÓN: La imagen mira hacia la cámara con lookAt
+            // Pero para que no se incline, usamos un Sprite en lugar de Mesh
+            // O mejor: hacemos que el mesh mire al centro pero sin inclinación
+            
             scene.add(mesh);
 
+            // Borde decorativo (también como Sprite)
             const bordeGeo = new THREE.PlaneGeometry(sizes[idx] + 0.15, sizes[idx] + 0.15);
             const bordeMat = new THREE.MeshBasicMaterial({
                 color: 0xff8da1,
@@ -1121,32 +1122,27 @@
         const div = document.createElement('div');
         div.className = 'mensaje-emergente';
         
-        // Título
         const tituloSpan = document.createElement('span');
         tituloSpan.className = 'titulo-msg';
         tituloSpan.textContent = '💕 ' + titulo + ' 💕';
         div.appendChild(tituloSpan);
         
-        // Texto
         const textoSpan = document.createElement('div');
         textoSpan.className = 'texto-msg';
         textoSpan.textContent = texto;
         div.appendChild(textoSpan);
         
-        // Decoración
         const decoracion = document.createElement('div');
         decoracion.className = 'decoracion';
         decoracion.textContent = '🌸 ✨ 💖 ✨ 🌸';
         div.appendChild(decoracion);
         
-        // Botón cerrar
         const cerrar = document.createElement('button');
         cerrar.className = 'cerrar';
         cerrar.textContent = '✕';
         cerrar.addEventListener('click', () => div.remove());
         div.appendChild(cerrar);
 
-        // Posicionar
         div.style.left = Math.min(x + 20, window.innerWidth - 420) + 'px';
         div.style.top = Math.min(y - 60, window.innerHeight - 250) + 'px';
         if (x + 420 > window.innerWidth) {
@@ -1410,6 +1406,7 @@
             p.elemento.style.opacity = vector.z < 1 ? '1' : '0';
         });
 
+        // ⭐ CORRECCIÓN: Las imágenes ahora miran SIEMPRE a la cámara
         imagenesOrbitando.forEach((img) => {
             img.angulo += img.velocidad;
             const x = Math.cos(img.angulo) * img.radio;
@@ -1417,8 +1414,11 @@
             const z = Math.sin(img.angulo * 0.7) * 1.2;
             img.mesh.position.set(x, y, z);
             img.borde.position.set(x, y, z + 0.01);
-            img.mesh.lookAt(0, 0, 0);
-            img.borde.lookAt(0, 0, 0);
+            
+            // ⭐ Las imágenes miran a la cámara (billboard) para que se vean perfectas
+            img.mesh.lookAt(camera.position);
+            img.borde.lookAt(camera.position);
+            
             img.borde.material.opacity = 0.2 + Math.sin(tiempo * 2 + img.angulo) * 0.1;
         });
 
