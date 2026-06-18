@@ -371,15 +371,18 @@
         }
         .lista-canciones button:hover { background: #ffb6c122; color: #fff; }
 
+        /* ================================================================
+           MENSAJE EMERGENTE CON IMAGEN POLAROID (solo aparece al hacer clic)
+           ================================================================ */
         .mensaje-emergente {
             position: fixed;
             z-index: 200;
             background: linear-gradient(145deg, #fff5f7, #ffe8ed);
             backdrop-filter: blur(12px);
             border-radius: 28px;
-            padding: 32px 36px;
-            max-width: 380px;
-            min-width: 200px;
+            padding: 28px 32px;
+            max-width: 420px;
+            min-width: 240px;
             box-shadow: 
                 0 20px 60px rgba(255, 107, 129, 0.3),
                 0 0 0 2px #ffb6c1,
@@ -453,17 +456,57 @@
             margin-bottom: 8px;
             display: block;
             letter-spacing: 0.5px;
+            text-align: center;
+        }
+        .mensaje-emergente .contenido-msg {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
         }
         .mensaje-emergente .texto-msg {
             color: #5a2d3a;
             font-size: 0.95rem;
             line-height: 1.6;
+            text-align: center;
+        }
+        /* IMAGEN POLAROID - SOLO APARECE DENTRO DEL MENSAJE */
+        .mensaje-emergente .polaroid {
+            width: 120px;
+            height: 120px;
+            border-radius: 16px;
+            object-fit: cover;
+            box-shadow: 
+                0 4px 15px rgba(255, 107, 129, 0.3),
+                0 0 0 3px #fff,
+                0 0 0 4px #ffb6c1;
+            transition: transform 0.3s ease;
+            background: #fff;
+            padding: 4px;
+        }
+        .mensaje-emergente .polaroid:hover {
+            transform: scale(1.05) rotate(-2deg);
+        }
+        .mensaje-emergente .polaroid-container {
+            position: relative;
+            display: inline-block;
+        }
+        .mensaje-emergente .polaroid-container::after {
+            content: '📸';
+            position: absolute;
+            bottom: -8px;
+            right: -8px;
+            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            padding: 2px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         .mensaje-emergente .decoracion {
             display: flex;
             gap: 6px;
             justify-content: center;
-            margin-top: 12px;
+            margin-top: 8px;
             font-size: 1.2rem;
         }
 
@@ -497,7 +540,8 @@
             .info-cancion { max-width: 70px; font-size: 0.7rem; }
             .barra-progreso input[type="range"] { width: 60px; }
             .volumen-slider input[type="range"] { width: 30px; }
-            .mensaje-emergente { max-width: 280px; padding: 24px 20px; font-size: 0.9rem; }
+            .mensaje-emergente { max-width: 300px; padding: 20px 16px; font-size: 0.9rem; }
+            .mensaje-emergente .polaroid { width: 80px; height: 80px; }
             #btnAbrir { font-size: 1.2rem; padding: 0.8rem 1.8rem; }
             #mensajeCentral .linea1 { font-size: clamp(1.4rem, 4.5vw, 2.2rem); }
             #mensajeCentral .linea2 { font-size: clamp(1.2rem, 3.5vw, 1.8rem); }
@@ -566,7 +610,9 @@
 
 <script>
     // ================================================================
-    //  CONFIGURACIÓN CENTRALIZADA - 28 IMÁGENES
+    //  CONFIGURACIÓN CENTRALIZADA
+    //  - 28 IMÁGENES FLOTANDO (transparentes)
+    //  - IMÁGENES PARA MENSAJES (polaroid, solo al hacer clic)
     // ================================================================
     const CONFIG = {
         nombre: "May",
@@ -581,27 +627,66 @@
             "Eres mi razón de ser"
         ],
         mensajesLargos: {
-            "Eres mi universo, May": "May, desde que llegaste a mi vida, cada estrella brilla con tu nombre. Eres el centro de todo mi cosmos, mi sol, mi luna y todas mis estrellas. 🌟💖",
-            "Cada latido es por ti": "Cada latido de mi corazón tiene tu nombre, May. Late por ti, late para ti, late contigo. Eres mi ritmo, mi melodía, mi canción de amor eterna. 🎵❤️",
-            "May, mi corazón baila contigo": "Cuando estoy contigo, mi corazón baila al ritmo de tu sonrisa. Eres mi melodía favorita, la canción que nunca quiero dejar de escuchar. 💃✨",
-            "Eres la luz de mi galaxia": "Tu luz ilumina incluso los rincones más oscuros de mi ser. Gracias por existir, May. Eres el faro que guía mi camino. 🌠💫",
-            "Contigo, eternidad": "Contigo, el tiempo se detiene y la eternidad se vuelve un instante. Te amo, May. Quiero pasar todas mis vidas a tu lado. ♾️💕",
-            "Eres mi sueño hecho realidad": "Cada noche soñaba contigo, y ahora despierto a tu lado. Eres mi sueño hecho realidad, mi deseo cumplido, mi mayor bendición. 🌙✨",
-            "Tu sonrisa ilumina mi mundo": "Cuando sonríes, el mundo se vuelve más brillante. Tu sonrisa es la luz que disipa todas mis sombras, mi alegría diaria. ☀️😊",
-            "Eres mi razón de ser": "Todo lo que hago, lo hago por ti. Eres mi motivación, mi inspiración, mi razón de ser. Sin ti, nada tendría sentido. 💖🌺"
+            "Eres mi universo, May": {
+                texto: "May, desde que llegaste a mi vida, cada estrella brilla con tu nombre. Eres el centro de todo mi cosmos, mi sol, mi luna y todas mis estrellas. 🌟💖",
+                img: "msg_foto1.webp"  // ⭐ IMAGEN POLAROID (solo en el mensaje)
+            },
+            "Cada latido es por ti": {
+                texto: "Cada latido de mi corazón tiene tu nombre, May. Late por ti, late para ti, late contigo. Eres mi ritmo, mi melodía, mi canción de amor eterna. 🎵❤️",
+                img: "msg_foto2.webp"
+            },
+            "May, mi corazón baila contigo": {
+                texto: "Cuando estoy contigo, mi corazón baila al ritmo de tu sonrisa. Eres mi melodía favorita, la canción que nunca quiero dejar de escuchar. 💃✨",
+                img: "msg_foto3.webp"
+            },
+            "Eres la luz de mi galaxia": {
+                texto: "Tu luz ilumina incluso los rincones más oscuros de mi ser. Gracias por existir, May. Eres el faro que guía mi camino. 🌠💫",
+                img: "msg_foto4.webp"
+            },
+            "Contigo, eternidad": {
+                texto: "Contigo, el tiempo se detiene y la eternidad se vuelve un instante. Te amo, May. Quiero pasar todas mis vidas a tu lado. ♾️💕",
+                img: "msg_foto5.webp"
+            },
+            "Eres mi sueño hecho realidad": {
+                texto: "Cada noche soñaba contigo, y ahora despierto a tu lado. Eres mi sueño hecho realidad, mi deseo cumplido, mi mayor bendición. 🌙✨",
+                img: "msg_foto6.webp"
+            },
+            "Tu sonrisa ilumina mi mundo": {
+                texto: "Cuando sonríes, el mundo se vuelve más brillante. Tu sonrisa es la luz que disipa todas mis sombras, mi alegría diaria. ☀️😊",
+                img: "msg_foto7.webp"
+            },
+            "Eres mi razón de ser": {
+                texto: "Todo lo que hago, lo hago por ti. Eres mi motivación, mi inspiración, mi razón de ser. Sin ti, nada tendría sentido. 💖🌺",
+                img: "msg_foto8.webp"
+            }
         },
         palabrasClave: {
-            "Recuerdos": "Nuestro primer viaje juntos, tus risas, tus abrazos y cada momento que compartimos. Atesoro cada segundo a tu lado, son mi tesoro más preciado. 📸💕",
-            "Promesas": "Te prometo amarte siempre, en las buenas y en las malas, hoy y por toda la eternidad. Mi amor por ti es infinito, May. 🤝💖",
-            "Futuro": "Imagino un futuro lleno de días soleados contigo, May. Nuestras historias, nuestros sueños, nuestras aventuras... todo juntos. 🌅✨",
-            "Eternidad": "El amor que siento por ti trasciende el tiempo y el espacio. Eres mi eternidad, mi todo, mi siempre. ♾️💫",
-            "Aventura": "Cada día a tu lado es una nueva aventura llena de magia, descubrimientos y amor incondicional. Contigo, la vida es una hermosa travesía. 🗺️❤️"
+            "Recuerdos": {
+                texto: "Nuestro primer viaje juntos, tus risas, tus abrazos y cada momento que compartimos. Atesoro cada segundo a tu lado, son mi tesoro más preciado. 📸💕",
+                img: "msg_foto9.webp"
+            },
+            "Promesas": {
+                texto: "Te prometo amarte siempre, en las buenas y en las malas, hoy y por toda la eternidad. Mi amor por ti es infinito, May. 🤝💖",
+                img: "msg_foto10.webp"
+            },
+            "Futuro": {
+                texto: "Imagino un futuro lleno de días soleados contigo, May. Nuestras historias, nuestros sueños, nuestras aventuras... todo juntos. 🌅✨",
+                img: "msg_foto11.webp"
+            },
+            "Eternidad": {
+                texto: "El amor que siento por ti trasciende el tiempo y el espacio. Eres mi eternidad, mi todo, mi siempre. ♾️💫",
+                img: "msg_foto12.webp"
+            },
+            "Aventura": {
+                texto: "Cada día a tu lado es una nueva aventura llena de magia, descubrimientos y amor incondicional. Contigo, la vida es una hermosa travesía. 🗺️❤️",
+                img: "msg_foto13.webp"
+            }
         },
         colores: ["#FFB6C1", "#FF6B81", "#FFD1DC", "#FFDAB9", "#FF85A2"],
         canciones: ["cancion1.mp3", "cancion2.mp3", "cancion3.mp3", "cancion4.mp3"],
         
-        // ⭐ 28 IMÁGENES ⭐
-        imagenes: [
+        // ⭐ 28 IMÁGENES FLOTANDO (transparentes) ⭐
+        imagenesFlotando: [
             "foto1.webp", "foto2.webp", "foto3.webp", "foto4.webp",
             "foto5.webp", "foto6.webp", "foto7.webp", "foto8.webp",
             "foto9.webp", "foto10.webp", "foto11.webp", "foto12.webp",
@@ -755,11 +840,11 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
-        cargarTexturas();
+        cargarTexturasFlotando();
         crearCorazonParticulas();
         crearFrases();
         crearPalabrasClave();
-        crearImagenes();
+        crearImagenesFlotando();
         efectoNacimiento();
         iniciarLluvia();
 
@@ -854,8 +939,12 @@
 
             div.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const mensaje = CONFIG.mensajesLargos[texto] || 'Te amo, May 💖';
-                mostrarMensajeEmergente(texto, mensaje, e.clientX, e.clientY);
+                const data = CONFIG.mensajesLargos[texto];
+                if (data) {
+                    mostrarMensajeEmergente(texto, data.texto, data.img, e.clientX, e.clientY);
+                } else {
+                    mostrarMensajeEmergente(texto, 'Te amo, May 💖', null, e.clientX, e.clientY);
+                }
             });
 
             frasesObjetos.push({
@@ -892,8 +981,12 @@
 
             div.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const mensaje = CONFIG.palabrasClave[palabra] || '💖';
-                mostrarMensajeEmergente(palabra, mensaje, e.clientX, e.clientY);
+                const data = CONFIG.palabrasClave[palabra];
+                if (data) {
+                    mostrarMensajeEmergente(palabra, data.texto, data.img, e.clientX, e.clientY);
+                } else {
+                    mostrarMensajeEmergente(palabra, '💖', null, e.clientX, e.clientY);
+                }
             });
 
             palabrasClaveObjetos.push({
@@ -905,10 +998,10 @@
     }
 
     // ================================================================
-    //  IMÁGENES ORBITANDO - 28 IMÁGENES
+    //  IMÁGENES FLOTANDO - 28 IMÁGENES (TRANSPARENTES)
     // ================================================================
-    function cargarTexturas() {
-        const imagenes = CONFIG.imagenes;
+    function cargarTexturasFlotando() {
+        const imagenes = CONFIG.imagenesFlotando;
         const loader = new THREE.TextureLoader();
         let cargadas = 0;
         
@@ -919,7 +1012,7 @@
                     imagenTextures.push(texture);
                     cargadas++;
                     if (cargadas === imagenes.length) {
-                        crearImagenes();
+                        crearImagenesFlotando();
                     }
                 },
                 undefined,
@@ -938,14 +1031,14 @@
                     imagenTextures.push(tex);
                     cargadas++;
                     if (cargadas === imagenes.length) {
-                        crearImagenes();
+                        crearImagenesFlotando();
                     }
                 }
             );
         });
     }
 
-    function crearImagenes() {
+    function crearImagenesFlotando() {
         if (imagenTextures.length === 0) {
             const canvas = document.createElement('canvas');
             canvas.width = 128; canvas.height = 128;
@@ -961,34 +1054,31 @@
             imagenTextures = Array(28).fill(tex);
         }
 
-        // 28 RADIOS Y 28 TAMAÑOS para 28 imágenes
-        // Distribución en 3 anillos: interno (4.0), medio (5.2), externo (6.4)
         const radios = [];
         const sizes = [];
         
         for (let i = 0; i < 28; i++) {
-            // Alternar entre 3 anillos para mejor distribución
             const anillo = i % 3;
             let radio;
-            if (anillo === 0) radio = 3.8 + Math.random() * 0.6;  // Anillo interno
-            else if (anillo === 1) radio = 5.0 + Math.random() * 0.6;  // Anillo medio
-            else radio = 6.2 + Math.random() * 0.6;  // Anillo externo
-            
+            if (anillo === 0) radio = 3.8 + Math.random() * 0.6;
+            else if (anillo === 1) radio = 5.0 + Math.random() * 0.6;
+            else radio = 6.2 + Math.random() * 0.6;
             radios.push(radio);
-            sizes.push(0.7 + Math.random() * 0.6);  // Tamaños variados
+            sizes.push(0.6 + Math.random() * 0.5);
         }
         
-        CONFIG.imagenes.forEach((_, idx) => {
+        CONFIG.imagenesFlotando.forEach((_, idx) => {
             const tex = imagenTextures[idx % imagenTextures.length];
             const size = sizes[idx];
             const geometria = new THREE.PlaneGeometry(size, size);
             const material = new THREE.MeshBasicMaterial({
                 map: tex,
                 transparent: true,
-                side: THREE.DoubleSide
+                side: THREE.DoubleSide,
+                opacity: 0.35  // ⭐ TRANSPARENCIA 35%
             });
             const mesh = new THREE.Mesh(geometria, material);
-            const angulo = (idx / CONFIG.imagenes.length) * Math.PI * 2 + Math.random() * 0.2;
+            const angulo = (idx / CONFIG.imagenesFlotando.length) * Math.PI * 2 + Math.random() * 0.2;
             const radio = radios[idx];
             mesh.position.set(
                 Math.cos(angulo) * radio,
@@ -1004,12 +1094,12 @@
             
             scene.add(mesh);
 
-            const bordeSize = size + 0.1;
+            const bordeSize = size + 0.08;
             const bordeGeo = new THREE.PlaneGeometry(bordeSize, bordeSize);
             const bordeMat = new THREE.MeshBasicMaterial({
                 color: 0xff8da1,
                 transparent: true,
-                opacity: 0.25,
+                opacity: 0.12,  // ⭐ BORDE TRANSPARENTE
                 side: THREE.DoubleSide
             });
             const borde = new THREE.Mesh(bordeGeo, bordeMat);
@@ -1131,42 +1221,72 @@
     }
 
     // ================================================================
-    //  MENSAJE EMERGENTE - ESTILO CUTE PASTEL 💖
+    //  MENSAJE EMERGENTE CON IMAGEN POLAROID
     // ================================================================
-    function mostrarMensajeEmergente(titulo, texto, x, y) {
+    function mostrarMensajeEmergente(titulo, texto, imgPath, x, y) {
         document.querySelectorAll('.mensaje-emergente').forEach(el => el.remove());
 
         const div = document.createElement('div');
         div.className = 'mensaje-emergente';
         
+        // Título
         const tituloSpan = document.createElement('span');
         tituloSpan.className = 'titulo-msg';
         tituloSpan.textContent = '💕 ' + titulo + ' 💕';
         div.appendChild(tituloSpan);
         
+        // Contenedor del contenido
+        const contenido = document.createElement('div');
+        contenido.className = 'contenido-msg';
+        
+        // Texto
         const textoSpan = document.createElement('div');
         textoSpan.className = 'texto-msg';
         textoSpan.textContent = texto;
-        div.appendChild(textoSpan);
+        contenido.appendChild(textoSpan);
         
+        // Imagen polaroid (solo si existe)
+        if (imgPath) {
+            const polaroidContainer = document.createElement('div');
+            polaroidContainer.className = 'polaroid-container';
+            
+            const img = document.createElement('img');
+            img.className = 'polaroid';
+            img.src = 'img/' + imgPath;
+            img.alt = 'Foto de ' + titulo;
+            img.loading = 'lazy';
+            
+            img.onerror = function() {
+                this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"%3E%3Crect fill="%23ffb6c1" width="120" height="120"/%3E%3Ctext x="60" y="60" text-anchor="middle" dy=".3em" font-size="40" fill="%23fff"%3E💖%3C/text%3E%3C/svg%3E';
+            };
+            
+            polaroidContainer.appendChild(img);
+            contenido.appendChild(polaroidContainer);
+        }
+        
+        div.appendChild(contenido);
+        
+        // Decoración
         const decoracion = document.createElement('div');
         decoracion.className = 'decoracion';
         decoracion.textContent = '🌸 ✨ 💖 ✨ 🌸';
         div.appendChild(decoracion);
         
+        // Botón cerrar
         const cerrar = document.createElement('button');
         cerrar.className = 'cerrar';
         cerrar.textContent = '✕';
         cerrar.addEventListener('click', () => div.remove());
         div.appendChild(cerrar);
 
-        div.style.left = Math.min(x + 20, window.innerWidth - 420) + 'px';
-        div.style.top = Math.min(y - 60, window.innerHeight - 250) + 'px';
-        if (x + 420 > window.innerWidth) {
-            div.style.left = (x - 400) + 'px';
+        // Posicionar
+        div.style.left = Math.min(x + 20, window.innerWidth - 460) + 'px';
+        div.style.top = Math.min(y - 80, window.innerHeight - 320) + 'px';
+        if (x + 460 > window.innerWidth) {
+            div.style.left = (x - 440) + 'px';
         }
-        if (y + 250 > window.innerHeight) {
-            div.style.top = (y - 230) + 'px';
+        if (y + 320 > window.innerHeight) {
+            div.style.top = (y - 300) + 'px';
         }
 
         document.body.appendChild(div);
@@ -1177,7 +1297,7 @@
     }
 
     // ================================================================
-    //  REPRODUCTOR DE MÚSICA (4 CANCIONES)
+    //  REPRODUCTOR DE MÚSICA
     // ================================================================
     function configurarReproductor() {
         const btnPlay = document.getElementById('btnPlayPause');
@@ -1274,7 +1394,7 @@
             if (currentIndex < cancionesLista.length - 1) {
                 reproducirCancion(currentIndex + 1);
             } else {
-                mostrarMensajeEmergente('💖 Amor Eterno 💖', 'May, esta canción termina, pero nuestro amor no. Cada nota es un latido que te dedico, y aunque la música se detenga, mi corazón seguirá cantando por ti. 🎵💕', 
+                mostrarMensajeEmergente('💖 Amor Eterno 💖', 'May, esta canción termina, pero nuestro amor no. Cada nota es un latido que te dedico, y aunque la música se detenga, mi corazón seguirá cantando por ti. 🎵💕', null,
                     window.innerWidth/2 - 150, window.innerHeight/2 - 50);
                 btnPlay.textContent = '▶';
                 isPlaying = false;
@@ -1431,11 +1551,8 @@
             img.mesh.position.set(x, y, z);
             img.borde.position.set(x, y, z + 0.01);
             
-            // Las imágenes miran a la cámara
             img.mesh.lookAt(camera.position);
             img.borde.lookAt(camera.position);
-            
-            img.borde.material.opacity = 0.2 + Math.sin(tiempo * 2 + img.angulo) * 0.1;
         });
 
         if (particulas.length > 0) {
@@ -1455,4 +1572,4 @@
     window.addEventListener('DOMContentLoaded', iniciar);
 </script>
 </body>
-    </html>
+</html>
