@@ -1005,7 +1005,7 @@
     const loader = new THREE.TextureLoader();
     let cargadas = 0;
     
-    // ⭐ ESTA ES LA URL CORRECTA (CON EL HASH DE TU COMMIT) ⭐
+    // ⭐ ESTA ES LA URL QUE SÍ FUNCIONA ⭐
     const baseURL = 'https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/';
     
     imagenes.forEach((img) => {
@@ -1025,7 +1025,7 @@
             undefined,
             (error) => {
                 console.error('❌ Error:', ruta);
-                // Placeholder con emoji
+                // Placeholder
                 const canvas = document.createElement('canvas');
                 canvas.width = 128; canvas.height = 128;
                 const ctx = canvas.getContext('2d');
