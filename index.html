@@ -1001,41 +1001,50 @@
     //  IMÁGENES FLOTANDO - 28 IMÁGENES (TRANSPARENTES)
     // ================================================================
     function cargarTexturasFlotando() {
-        const imagenes = CONFIG.imagenesFlotando;
-        const loader = new THREE.TextureLoader();
-        let cargadas = 0;
+    const imagenes = CONFIG.imagenesFlotando;
+    const loader = new THREE.TextureLoader();
+    let cargadas = 0;
+    
+    // ⭐ ESTA ES LA URL CORRECTA (CON EL HASH DE TU COMMIT) ⭐
+    const baseURL = 'https://raw.githubusercontent.com/honeymoon80/Gift-love/ff17169ba27444eefe22f2fbb536ce5f315ee680/img/';
+    
+    imagenes.forEach((img) => {
+        const ruta = baseURL + img;
+        console.log('Cargando:', ruta);
         
-        imagenes.forEach((img) => {
-            loader.load(
-                './img/' + img,
-                (texture) => {
-                    imagenTextures.push(texture);
-                    cargadas++;
-                    if (cargadas === imagenes.length) {
-                        crearImagenesFlotando();
-                    }
-                },
-                undefined,
-                () => {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = 128; canvas.height = 128;
-                    const ctx = canvas.getContext('2d');
-                    ctx.fillStyle = '#ffb6c1';
-                    ctx.fillRect(0, 0, 128, 128);
-                    ctx.fillStyle = '#fff';
-                    ctx.font = '30px sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText('💖', 64, 64);
-                    const tex = new THREE.CanvasTexture(canvas);
-                    imagenTextures.push(tex);
-                    cargadas++;
-                    if (cargadas === imagenes.length) {
-                        crearImagenesFlotando();
-                    }
+        loader.load(
+            ruta,
+            (texture) => {
+                console.log('✅ Cargada:', ruta);
+                imagenTextures.push(texture);
+                cargadas++;
+                if (cargadas === imagenes.length) {
+                    crearImagenesFlotando();
                 }
-            );
-        });
+            },
+            undefined,
+            (error) => {
+                console.error('❌ Error:', ruta);
+                // Placeholder con emoji
+                const canvas = document.createElement('canvas');
+                canvas.width = 128; canvas.height = 128;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#ff6b81';
+                ctx.fillRect(0, 0, 128, 128);
+                ctx.fillStyle = '#fff';
+                ctx.font = '40px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('📸', 64, 64);
+                const tex = new THREE.CanvasTexture(canvas);
+                imagenTextures.push(tex);
+                cargadas++;
+                if (cargadas === imagenes.length) {
+                    crearImagenesFlotando();
+                }
+            }
+        );
+    });
     }
 
     function crearImagenesFlotando() {
